@@ -1,0 +1,24 @@
+{
+  "name": "holand",
+  "description": "",
+  "version": "0.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smartcrash/holand.git"
+  },
+  "keywords": [],
+  "author": "smartcrash",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/smartcrash/holand/issues"
+  },
+  "homepage": "https://github.com/smartcrash/holand#readme",
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
+}
+
