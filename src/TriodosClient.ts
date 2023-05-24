@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { createHash, createSign, BinaryLike } from 'node:crypto'
-import axios, { Axios } from 'axios'
+import { request } from 'undici'
 import { v4 as uuidv4 } from 'uuid';
 
 /* 
@@ -41,32 +41,42 @@ type TridosClientOptions = {
 }
 
 class TriodosClient {
-    private readonly client: Axios
+    private readonly baseUrl: string
+    private readonly defaultHeaders: Record<string, string> = {}
+    private readonly keyId: string
+    private readonly privateKey: string
 
     constructor({ keyId, tenant, signingCertificate, privateKey }: TridosClientOptions) {
-        this.client = axios.create({
-            baseURL: `https://xs2a-sandbox.triodos.com/xs2a-bg/${tenant}/`,
-            headers: { Accept: 'application/json' },
-        })
+        this.baseUrl = `https://xs2a-sandbox.triodos.com/xs2a-bg/${tenant}/`
+        this.keyId = keyId
+        this.privateKey = privateKey
 
-        this.client.defaults.headers.common['TPP-Signature-Certificate'] = signingCertificate
+        const certificateWithoutHeaders = signingCertificate
             .replace('-----BEGIN CERTIFICATE-----', '')
             .replace('-----END CERTIFICATE-----', '')
             .trim();
-        this.client.defaults.headers.common['SSL-Certificate'] = this.client.defaults.headers.common['TPP-Signature-Certificate']
-
-
-        this.client.interceptors.request.use((config) => {
-            config.headers['X-Request-ID'] = uuidv4()
-            config.headers['Digest'] = this.calculateMessageDigest(config.data || '')
-            config.headers['Signature'] = this.calculateSignature(config.headers, keyId, privateKey)
-            return config
-        })
+        this.defaultHeaders['TPP-Signature-Certificate'] = certificateWithoutHeaders
+        this.defaultHeaders['SSL-Certificate'] = certificateWithoutHeaders
     }
 
     async getInitialAccessToken(): Promise<GetInitialAccessTokenResponse> {
-        const { data } = await this.client.get(`onboarding/v1`)
+        const { body } = await this.signedRequest(this.baseUrl + 'onboarding/v1')
+        const data = await body.json()
+
         return data
+    }
+
+    private signedRequest: typeof request = (url, options = {}) => {
+        options.headers ||= {}
+
+        assert(!Array.isArray(options.headers))
+
+        Object.assign(options.headers, this.defaultHeaders)
+        options.headers['X-Request-ID'] = uuidv4()
+        options.headers['Digest'] = this.calculateMessageDigest(String(options?.body))
+        options.headers['Signature'] = this.calculateSignature(options.headers, this.keyId, this.privateKey)
+
+        return request(url, options)
     }
 
     private calculateMessageDigest = (data: BinaryLike) => "SHA-256=" + createHash('sha256').update(data).digest('base64')
