@@ -1,4 +1,5 @@
 import assert from 'node:assert'
+import querystring from 'node:querystring';
 import { createHash, createSign, BinaryLike } from 'node:crypto'
 import { request } from 'undici'
 import { v4 as uuidv4 } from 'uuid';
@@ -40,16 +41,38 @@ type TridosClientOptions = {
     privateKey: string
 }
 
+type RegisterClientOptions = {
+    sectorIdentifierUri?: string
+    redirectUris: string[]
+    accessToken: string
+}
+
+type RegisterClientResponse = {
+    grant_types: string[]
+    application_type: string
+    client_secret_expires_at: number
+    redirect_uris: string[]
+    client_id_issued_at: number
+    client_secret: string
+    tls_client_certificate_bound_access_tokens: boolean
+    token_endpoint_auth_method: string
+    client_id: string
+    response_types: string[]
+    id_token_signed_response_alg: string
+}
+
+
 class TriodosClient {
-    private readonly baseUrl: string
+    private readonly baseUrl = 'https://xs2a-sandbox.triodos.com/'
     private readonly defaultHeaders: Record<string, string> = {}
+    private readonly tenant: string
     private readonly keyId: string
     private readonly privateKey: string
 
     constructor({ keyId, tenant, signingCertificate, privateKey }: TridosClientOptions) {
-        this.baseUrl = `https://xs2a-sandbox.triodos.com/xs2a-bg/${tenant}/`
         this.keyId = keyId
         this.privateKey = privateKey
+        this.tenant = tenant
 
         const certificateWithoutHeaders = signingCertificate
             .replace('-----BEGIN CERTIFICATE-----', '')
@@ -59,8 +82,29 @@ class TriodosClient {
         this.defaultHeaders['SSL-Certificate'] = certificateWithoutHeaders
     }
 
-    async getInitialAccessToken(): Promise<GetInitialAccessTokenResponse> {
-        const { body } = await this.signedRequest(this.baseUrl + 'onboarding/v1')
+    public async getInitialAccessToken(): Promise<GetInitialAccessTokenResponse> {
+        const { body } = await this.signedRequest(this.baseUrl + `xs2a-bg/${this.tenant}/onboarding/v1`)
+        const data = await body.json()
+
+        return data
+    }
+
+    public async registerClient({ accessToken, redirectUris, sectorIdentifierUri }: RegisterClientOptions): Promise<RegisterClientResponse> {
+        const { body } = await this.signedRequest(this.baseUrl + `auth/${this.tenant}/v1/registration`,
+            {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    Accept: 'application/json',
+                    'Content-type': 'application/x-www-form-urlencoded'
+                },
+                body: querystring.stringify({
+                    redirect_uris: redirectUris,
+                    sector_identifier_uri: sectorIdentifierUri
+                })
+            }
+        )
+
         const data = await body.json()
 
         return data

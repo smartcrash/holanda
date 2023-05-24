@@ -13,7 +13,7 @@ let client: TriodosClient
 
 test.beforeEach(() => client = new TriodosClient({ keyId, signingCertificate, privateKey, tenant: 'nl' }))
 
-test('getInitialAccessToken() returns successful response', async (t) => {
+test.serial('getInitialAccessToken() returns successful response', async (t) => {
     const response = await client.getInitialAccessToken()
 
     t.assert(typeof response === 'object')
@@ -24,3 +24,22 @@ test('getInitialAccessToken() returns successful response', async (t) => {
     t.assert(typeof response._links === 'object')
     t.assert(typeof response._links.registration === 'string')
 });
+
+test.serial('registerClient() returns successful response', async (t) => {
+    const { access_token: accessToken } = await client.getInitialAccessToken()
+
+    const response = await client.registerClient({ accessToken, redirectUris: ['http://example.com'] })
+
+    t.assert(typeof response === 'object')
+    t.assert(Array.isArray(response.grant_types))
+    t.assert(typeof response.application_type === 'string')
+    t.assert(typeof response.client_secret_expires_at === 'number')
+    t.assert(Array.isArray(response.redirect_uris))
+    t.assert(typeof response.client_id_issued_at === 'number')
+    t.assert(typeof response.client_secret === 'string')
+    t.assert(typeof response.tls_client_certificate_bound_access_tokens === 'boolean')
+    t.assert(typeof response.token_endpoint_auth_method === 'string')
+    t.assert(typeof response.client_id === 'string')
+    t.assert(Array.isArray(response.response_types))
+    t.assert(typeof response.id_token_signed_response_alg === 'string')
+})
