@@ -97,6 +97,11 @@ type GetSepaPaymentStatusOptions = {
 
 type GetSepaPaymentStatusResponse = {
   transactionStatus: 'RCVD' | 'PDNG' | 'ACCP' | 'ACTC' | 'ACWC' | 'ACWP' | 'ACSP' | 'ACSC' | 'RJCT' | 'CANC' | 'PATC' | 'ACFC'
+  /**
+   * This data element is contained, if a funds check has been performed and
+   * if the transactionStatus is `ACTC`, `ACWC` or `ACCP`.
+   */
+  fundsAvailable?: boolean
 }
 
 
