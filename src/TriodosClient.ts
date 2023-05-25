@@ -118,7 +118,7 @@ type GetSepaPaymentDetailsResponse = {
   }
 }
 
-type InitiateCrosBorderPaymentOptions = {
+type InitiateCrossBorderPaymentOptions = {
   ipAddr: string
   redirectUri: string
   requestBody: {
@@ -147,7 +147,7 @@ type InitiateCrosBorderPaymentOptions = {
   }
 }
 
-type InitiateCrosBorderPaymentResponse = {
+type InitiateCrossBorderPaymentResponse = {
   transactionStatus: 'RCVD' | 'PDNG' | 'ACCP' | 'ACTC' | 'ACWC' | 'ACWP' | 'ACSP' | 'ACSC' | 'RJCT' | 'CANC' | 'PATC' | 'ACFC'
   paymentId: string
   authorisationId: string
@@ -235,7 +235,7 @@ class TriodosClient {
     return data
   }
 
-  public async initiateCrosBorderPayment({ ipAddr, redirectUri, requestBody }: InitiateCrosBorderPaymentOptions): Promise<InitiateCrosBorderPaymentResponse> {
+  public async initiateCrossBorderPayment({ ipAddr, redirectUri, requestBody }: InitiateCrossBorderPaymentOptions): Promise<InitiateCrossBorderPaymentResponse> {
     const options: Parameters<typeof this.signedRequest>[1] = {}
     options.method = 'POST'
     options.headers = {}

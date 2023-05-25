@@ -213,7 +213,7 @@ test.serial('initiateCrosBorderPayment() should return successful response', asy
     remittanceInformationUnstructured: "Remit info",
     requestedExecutionDate: "2024-03-05"
   }
-  const response = await client.initiateCrosBorderPayment({
+  const response = await client.initiateCrossBorderPayment({
     ipAddr: '0.0.0.0',
     redirectUri: 'http://example.com',
     requestBody
@@ -257,7 +257,7 @@ test.serial('initiateCrosBorderPayment() should throw error if currency is EUR',
     remittanceInformationUnstructured: "Remit info",
     requestedExecutionDate: "2024-03-05"
   }
-  const error: any = await t.throwsAsync(() => client.initiateCrosBorderPayment({
+  const error: any = await t.throwsAsync(() => client.initiateCrossBorderPayment({
     ipAddr: '0.0.0.0',
     redirectUri: 'http://example.com',
     requestBody
