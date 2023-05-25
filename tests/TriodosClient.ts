@@ -1,5 +1,5 @@
 import test from 'ava';
-import { TriodosClient } from '../src/TriodosClient'
+import { TriodosClient, Errors } from '../src/TriodosClient'
 
 const signingCertificate = `-----BEGIN CERTIFICATE-----
 MIIEmDCCA4CgAwIBAgIBATANBgkqhkiG9w0BAQsFADBmMQswCQYDVQQGEwJOTDEOMAwGA1UEBxMFWmVpc3QxGzAZBgNVBGETElBTREdPLUJFUy1XR1haS0JZRTEUMBIGA1UEChMLVHJpb2Rvc0JhbmsxFDASBgNVBAMTC1hzMmFUcHAuY29tMB4XDTIzMDUxNTE1MTkwNVoXDTI1MDUyMjE1MTkwNVowdzELMAkGA1UEBhMCTkwxEDAOBgNVBAcTB1V0cmVjaHQxGjAYBgNVBGETEVBTRE5MLUROQi1SMDAwMDAwMRcwFQYDVQQKEw5EaWVnbyBEYSdTaWx2YTEhMB8GA1UEAxMYeHMyYS1zYW5kYm94LnRyaW9kb3MuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnck+idrIoZ4/flE98CLKgUmqfvlxZ3+uhmSysIXgCy/gNUdH77cY9zIojUR2/sYD+X0lDH5Jj1uLFzu7XZaO16LRL+UW+gl/BA0/UsgWmEv5PW3NOEhXhFEKFZyMXdGvMGcUOyj3fdeGhXJh9BZB0PKR681hve9kGSn+ER0yi1UVqiP1XJ8tJOdy77kEVjLF5qU2+dJmzmzf0Js1iRI4oGaXnaEC7Nz2NScAj4eJlhfy+IXfaxibte+V14qWo2IfMruyPxXr/j2XCWz6ixdZmezioZjZUA6NKdiaCqrlmF1KteQHvzVw4qeZdTd5FW/zUF44jSO2Z7XAoJl8Bb5A8QIDAQABo4IBPjCCATowDAYDVR0TAQH/BAIwADCBkAYDVR0jBIGIMIGFgBQIceqshLew84gIBmMxmTsbtKYMm6FqpGgwZjELMAkGA1UEBhMCTkwxDjAMBgNVBAcTBVplaXN0MRswGQYDVQRhExJQU0RHTy1CRVMtV0dYWktCWUUxFDASBgNVBAoTC1RyaW9kb3NCYW5rMRQwEgYDVQQDEwtYczJhVHBwLmNvbYIBATAdBgNVHQ4EFgQUx+RFF6elAebCCUDGPfdJhE8RzlMwDgYDVR0PAQH/BAQDAgKkMGgGCCsGAQUFBwEDAQH/BFkwVzBVBgYEAIGYJwIwSzA5MBEGBwQAgZgnAQIMBlBTUF9QSTARBgcEAIGYJwEDDAZQU1BfQUkwEQYHBACBmCcBBAwGUFNQX0lDDAduY2FOYW1lDAVuY2FJZDANBgkqhkiG9w0BAQsFAAOCAQEAZ7g+kb6YNFW1TxoN95nfY+pLf6IV1hbtK9GFjXQky2qmTUEzjavWW2Gdg7hYG5rWmt4WcbX5lr29wfp05U92ViciyOYpeCkznWFezAyv2s7lmAoIQu4m/eMKmZjrQz2kBFeSpe/6Zpta9aPlzqIcFawbZbXbGjA6NJf5e/P076bwwBHuIVumGEnaw2HrOZ1eTADyTNekBtaXO2ixwjUFi70H1vPOgX+W6F4Q92dYQZLmQsbVvwFUxDU3tWB3ni5QC5t9cL3C58lPKVIyolnfhTPo3k4uLiFkf4hd+t8v0wTL+pZH+KkI0MKO+6HWvlD00NNAdo/oxoZtPKhNItr7ZA==
@@ -42,4 +42,27 @@ test.serial('registerClient() returns successful response', async (t) => {
   t.assert(typeof response.client_id === 'string')
   t.assert(Array.isArray(response.response_types))
   t.assert(typeof response.id_token_signed_response_alg === 'string')
+})
+
+test.serial('registerClient() should return if not at least one redirect uri is given', async (t) => {
+  const { access_token: accessToken } = await client.getInitialAccessToken()
+
+  const error: any = await t.throwsAsync(
+    () => client.registerClient({ accessToken, redirectUris: [] }),
+    { instanceOf: Errors.ResponseStatusCodeError }
+  )
+
+  t.is(error.status, 400)
+  t.is(error.body.error, 'invalid_request')
+  t.is(error.body.error_description, 'There should be at least one redirect URI')
+})
+
+test.serial('registerClient() should throw if accessToken missing', async (t) => {
+  const error: any = await t.throwsAsync(
+    () => client.registerClient({ accessToken: '', redirectUris: ['http://example.com'] }),
+    { instanceOf: Errors.ResponseStatusCodeError }
+  )
+
+  t.is(error.status, 400)
+  t.is(error.body.error, 'Invalid HTTP Authorization header value')
 })

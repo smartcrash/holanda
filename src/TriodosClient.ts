@@ -141,4 +141,4 @@ class TriodosClient {
   }
 }
 
-export { TriodosClient }
+export { TriodosClient, Errors }
