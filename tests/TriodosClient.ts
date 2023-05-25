@@ -1,4 +1,5 @@
 import test from 'ava';
+import { v4 as uuidv4 } from 'uuid'
 import { TriodosClient, Errors } from '../src/TriodosClient'
 
 const signingCertificate = `-----BEGIN CERTIFICATE-----
@@ -90,7 +91,7 @@ test.serial('initiateSepaPayment() should return successful response', async (t)
   })
 
   t.assert(typeof response === 'object')
-  t.assert(response.transactionStatus === 'RCVD')
+  t.is(response.transactionStatus, 'RCVD')
   t.assert(typeof response.paymentId === 'string')
   t.assert(typeof response.authorisationId === 'string')
   t.assert(typeof response.debtorAccount === 'object')
@@ -101,4 +102,30 @@ test.serial('initiateSepaPayment() should return successful response', async (t)
   t.assert(typeof response._links.scaStatus === 'string')
   t.assert(typeof response._links.self === 'string')
   t.assert(typeof response._links.status === 'string')
+})
+
+test.serial('getSepaPaymentStatus() should return successful response', async (t) => {
+  const { paymentId } = await client.initiateSepaPayment({
+    ipAddr: '0.0.0.0',
+    redirectUri: 'http://example.com',
+    requestBody: {
+      instructedAmount: {
+        currency: "EUR",
+        amount: "11"
+      },
+      debtorAccount: {
+        iban: "NL37TRIO0320564487"
+      },
+      creditorAccount: {
+        iban: "NL49RABO4963487330"
+      },
+      creditorName: "Jhon Doe",
+      requestedExecutionDate: "2024-02-22",
+    }
+  })
+
+  const response = await client.getSepaPaymentStatus({ resourceId: paymentId })
+
+  t.assert(typeof response === 'object')
+  t.is(response.transactionStatus, 'RCVD')
 })

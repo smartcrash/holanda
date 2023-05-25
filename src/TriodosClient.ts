@@ -91,6 +91,14 @@ type InitiateSepaPaymentOptions = {
   }
 }
 
+type GetSepaPaymentStatusOptions = {
+  resourceId: string
+}
+
+type GetSepaPaymentStatusResponse = {
+  transactionStatus: 'RCVD' | 'PDNG' | 'ACCP' | 'ACTC' | 'ACWC' | 'ACWP' | 'ACSP' | 'ACSC' | 'RJCT' | 'CANC' | 'PATC' | 'ACFC'
+}
+
 
 class TriodosClient {
   private readonly baseUrl = 'https://xs2a-sandbox.triodos.com/'
@@ -146,6 +154,13 @@ class TriodosClient {
 
     const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/payments/sepa-credit-transfers`
     const response = await this.signedRequest(endpoint, options)
+    const data = await response.body.json()
+    return data
+  }
+
+  public async getSepaPaymentStatus({ resourceId }: GetSepaPaymentStatusOptions): Promise<GetSepaPaymentStatusResponse> {
+    const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/payments/sepa-credit-transfers/${resourceId}/status`
+    const response = await this.signedRequest(endpoint)
     const data = await response.body.json()
     return data
   }
