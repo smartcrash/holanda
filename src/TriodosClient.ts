@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import querystring from 'node:querystring';
 import { createHash, createSign, BinaryLike } from 'node:crypto'
-import { request } from 'undici'
+import { request, errors as Errors } from 'undici'
 import { v4 as uuidv4 } from 'uuid';
 
 /*
@@ -83,30 +83,25 @@ class TriodosClient {
   }
 
   public async getInitialAccessToken(): Promise<GetInitialAccessTokenResponse> {
-    const { body } = await this.signedRequest(this.baseUrl + `xs2a-bg/${this.tenant}/onboarding/v1`)
+    const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/onboarding/v1`
+    const { body } = await this.signedRequest(endpoint)
     const data = await body.json()
 
     return data
   }
 
   public async registerClient({ accessToken, redirectUris, sectorIdentifierUri }: RegisterClientOptions): Promise<RegisterClientResponse> {
-    const { body } = await this.signedRequest(this.baseUrl + `auth/${this.tenant}/v1/registration`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          Accept: 'application/json',
-          'Content-type': 'application/x-www-form-urlencoded'
-        },
-        body: querystring.stringify({
-          redirect_uris: redirectUris,
-          sector_identifier_uri: sectorIdentifierUri
-        })
-      }
-    )
+    const options: Parameters<typeof this.signedRequest>[1] = {}
+    options.method = 'POST'
+    options.headers = {}
+    options.headers.Authorization = `Bearer ${accessToken}`
+    options.headers.Accept = 'application/json'
+    options.headers['Content-type'] = 'application/x-www-form-urlencoded'
+    options.body = querystring.stringify({ redirect_uris: redirectUris, sector_identifier_uri: sectorIdentifierUri })
 
+    const endpoint = `${this.baseUrl}auth/${this.tenant}/v1/registration`
+    const { body } = await this.signedRequest(endpoint, options)
     const data = await body.json()
-
     return data
   }
 
@@ -119,6 +114,8 @@ class TriodosClient {
     options.headers['X-Request-ID'] = uuidv4()
     options.headers['Digest'] = this.calculateMessageDigest(String(options?.body))
     options.headers['Signature'] = this.calculateSignature(options.headers, this.keyId, this.privateKey)
+
+    options.throwOnError = true
 
     return request(url, options)
   }
