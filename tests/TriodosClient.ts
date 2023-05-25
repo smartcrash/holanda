@@ -66,3 +66,39 @@ test.serial('registerClient() should throw if accessToken missing', async (t) =>
   t.is(error.status, 400)
   t.is(error.body.error, 'Invalid HTTP Authorization header value')
 })
+
+test.serial('initiateSepaPayment() should return successful response', async (t) => {
+  const requestBody = {
+    instructedAmount: {
+      currency: "EUR",
+      amount: "11"
+    },
+    debtorAccount: {
+      iban: "NL37TRIO0320564487"
+    },
+    creditorAccount: {
+      iban: "NL49RABO4963487330"
+    },
+    creditorName: "Jhon Doe",
+    requestedExecutionDate: "2024-02-22",
+  }
+
+  const response = await client.initiateSepaPayment({
+    ipAddr: '0.0.0.0',
+    redirectUri: 'http://example.com',
+    requestBody
+  })
+
+  t.assert(typeof response === 'object')
+  t.assert(response.transactionStatus === 'RCVD')
+  t.assert(typeof response.paymentId === 'string')
+  t.assert(typeof response.authorisationId === 'string')
+  t.assert(typeof response.debtorAccount === 'object')
+  t.assert(typeof response.debtorAccount.iban === 'string')
+  t.assert(typeof response._links === 'object')
+  t.assert(typeof response._links.scaOAuth === 'string')
+  t.assert(typeof response._links.scaRedirect === 'string')
+  t.assert(typeof response._links.scaStatus === 'string')
+  t.assert(typeof response._links.self === 'string')
+  t.assert(typeof response._links.status === 'string')
+})

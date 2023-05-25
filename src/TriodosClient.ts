@@ -61,6 +61,36 @@ type RegisterClientResponse = {
   id_token_signed_response_alg: string
 }
 
+type InitiateSepaPaymentResponse = {
+  transactionStatus: 'RCVD' | 'PDNG' | 'ACCP' | 'ACTC' | 'ACWC' | 'ACWP' | 'ACSP' | 'ACSC' | 'RJCT' | 'CANC' | 'PATC' | 'ACFC'
+  paymentId: string
+  authorisationId: string
+  debtorAccount: { iban: string },
+  _links: {
+    scaOAuth: string
+    scaRedirect: string
+    scaStatus: string
+    self: string
+    confirmation: string
+    status: string
+  }
+}
+
+type InitiateSepaPaymentOptions = {
+  ipAddr: string
+  redirectUri: string
+  requestBody: {
+    instructedAmount: {
+      currency: string
+      amount: string
+    }
+    debtorAccount: { iban: string }
+    creditorAccount: { iban: string }
+    creditorName: string
+    requestedExecutionDate: string
+  }
+}
+
 
 class TriodosClient {
   private readonly baseUrl = 'https://xs2a-sandbox.triodos.com/'
@@ -80,6 +110,8 @@ class TriodosClient {
       .trim();
     this.defaultHeaders['TPP-Signature-Certificate'] = certificateWithoutHeaders
     this.defaultHeaders['SSL-Certificate'] = certificateWithoutHeaders
+    this.defaultHeaders.Accept = 'application/json'
+    this.defaultHeaders['Content-Type'] = 'application/json'
   }
 
   public async getInitialAccessToken(): Promise<GetInitialAccessTokenResponse> {
@@ -95,8 +127,7 @@ class TriodosClient {
     options.method = 'POST'
     options.headers = {}
     options.headers.Authorization = `Bearer ${accessToken}`
-    options.headers.Accept = 'application/json'
-    options.headers['Content-type'] = 'application/x-www-form-urlencoded'
+    options.headers['Content-Type'] = 'application/x-www-form-urlencoded'
     options.body = querystring.stringify({ redirect_uris: redirectUris, sector_identifier_uri: sectorIdentifierUri })
 
     const endpoint = `${this.baseUrl}auth/${this.tenant}/v1/registration`
@@ -105,12 +136,26 @@ class TriodosClient {
     return data
   }
 
+  public async initiateSepaPayment({ ipAddr, redirectUri, requestBody }: InitiateSepaPaymentOptions): Promise<InitiateSepaPaymentResponse> {
+    const options: Parameters<typeof this.signedRequest>[1] = {}
+    options.method = 'POST'
+    options.headers = {}
+    options.headers['PSU-IP-Address'] = ipAddr
+    options.headers['TPP-Redirect-URI'] = redirectUri
+    options.body = JSON.stringify(requestBody)
+
+    const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/payments/sepa-credit-transfers`
+    const response = await this.signedRequest(endpoint, options)
+    const data = await response.body.json()
+    return data
+  }
+
   private signedRequest: typeof request = (url, options = {}) => {
     options.headers ||= {}
 
     assert(!Array.isArray(options.headers))
 
-    Object.assign(options.headers, this.defaultHeaders)
+    options.headers = Object.assign({}, this.defaultHeaders, options.headers)
     options.headers['X-Request-ID'] = uuidv4()
     options.headers['Digest'] = this.calculateMessageDigest(String(options?.body))
     options.headers['Signature'] = this.calculateSignature(options.headers, this.keyId, this.privateKey)
