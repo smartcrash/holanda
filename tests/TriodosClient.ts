@@ -2,6 +2,8 @@ import test from 'ava';
 import { v4 as uuidv4 } from 'uuid'
 import { TriodosClient, Errors } from '../src/TriodosClient'
 
+const { ResponseStatusCodeError } = Errors
+
 const signingCertificate = `-----BEGIN CERTIFICATE-----
 MIIEmDCCA4CgAwIBAgIBATANBgkqhkiG9w0BAQsFADBmMQswCQYDVQQGEwJOTDEOMAwGA1UEBxMFWmVpc3QxGzAZBgNVBGETElBTREdPLUJFUy1XR1haS0JZRTEUMBIGA1UEChMLVHJpb2Rvc0JhbmsxFDASBgNVBAMTC1hzMmFUcHAuY29tMB4XDTIzMDUxNTE1MTkwNVoXDTI1MDUyMjE1MTkwNVowdzELMAkGA1UEBhMCTkwxEDAOBgNVBAcTB1V0cmVjaHQxGjAYBgNVBGETEVBTRE5MLUROQi1SMDAwMDAwMRcwFQYDVQQKEw5EaWVnbyBEYSdTaWx2YTEhMB8GA1UEAxMYeHMyYS1zYW5kYm94LnRyaW9kb3MuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnck+idrIoZ4/flE98CLKgUmqfvlxZ3+uhmSysIXgCy/gNUdH77cY9zIojUR2/sYD+X0lDH5Jj1uLFzu7XZaO16LRL+UW+gl/BA0/UsgWmEv5PW3NOEhXhFEKFZyMXdGvMGcUOyj3fdeGhXJh9BZB0PKR681hve9kGSn+ER0yi1UVqiP1XJ8tJOdy77kEVjLF5qU2+dJmzmzf0Js1iRI4oGaXnaEC7Nz2NScAj4eJlhfy+IXfaxibte+V14qWo2IfMruyPxXr/j2XCWz6ixdZmezioZjZUA6NKdiaCqrlmF1KteQHvzVw4qeZdTd5FW/zUF44jSO2Z7XAoJl8Bb5A8QIDAQABo4IBPjCCATowDAYDVR0TAQH/BAIwADCBkAYDVR0jBIGIMIGFgBQIceqshLew84gIBmMxmTsbtKYMm6FqpGgwZjELMAkGA1UEBhMCTkwxDjAMBgNVBAcTBVplaXN0MRswGQYDVQRhExJQU0RHTy1CRVMtV0dYWktCWUUxFDASBgNVBAoTC1RyaW9kb3NCYW5rMRQwEgYDVQQDEwtYczJhVHBwLmNvbYIBATAdBgNVHQ4EFgQUx+RFF6elAebCCUDGPfdJhE8RzlMwDgYDVR0PAQH/BAQDAgKkMGgGCCsGAQUFBwEDAQH/BFkwVzBVBgYEAIGYJwIwSzA5MBEGBwQAgZgnAQIMBlBTUF9QSTARBgcEAIGYJwEDDAZQU1BfQUkwEQYHBACBmCcBBAwGUFNQX0lDDAduY2FOYW1lDAVuY2FJZDANBgkqhkiG9w0BAQsFAAOCAQEAZ7g+kb6YNFW1TxoN95nfY+pLf6IV1hbtK9GFjXQky2qmTUEzjavWW2Gdg7hYG5rWmt4WcbX5lr29wfp05U92ViciyOYpeCkznWFezAyv2s7lmAoIQu4m/eMKmZjrQz2kBFeSpe/6Zpta9aPlzqIcFawbZbXbGjA6NJf5e/P076bwwBHuIVumGEnaw2HrOZ1eTADyTNekBtaXO2ixwjUFi70H1vPOgX+W6F4Q92dYQZLmQsbVvwFUxDU3tWB3ni5QC5t9cL3C58lPKVIyolnfhTPo3k4uLiFkf4hd+t8v0wTL+pZH+KkI0MKO+6HWvlD00NNAdo/oxoZtPKhNItr7ZA==
 -----END CERTIFICATE-----`
@@ -102,6 +104,32 @@ test.serial('initiateSepaPayment() should return successful response', async (t)
   t.assert(typeof response._links.scaStatus === 'string')
   t.assert(typeof response._links.self === 'string')
   t.assert(typeof response._links.status === 'string')
+})
+
+test.serial('initiateSepaPayment() should throw error if currency is other than EUR', async (t) => {
+  const requestBody = {
+    instructedAmount: {
+      currency: "GBP",
+      amount: "11"
+    },
+    debtorAccount: {
+      iban: "NL37TRIO0320564487"
+    },
+    creditorAccount: {
+      iban: "NL49RABO4963487330"
+    },
+    creditorName: "Jhon Doe",
+    requestedExecutionDate: "2024-02-22",
+  }
+
+  const error: any = await t.throwsAsync(() => client.initiateSepaPayment({
+    ipAddr: '0.0.0.0',
+    redirectUri: 'http://example.com',
+    requestBody
+  }), { instanceOf: ResponseStatusCodeError })
+
+  t.assert(typeof error === 'object')
+  t.is(error.status, 400)
 })
 
 test.serial('getSepaPaymentStatus() should return successful response', async (t) => {
