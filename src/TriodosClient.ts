@@ -24,6 +24,12 @@ type AutherizationGetOptions = {
 type AutherizationGetResponse = void
 */
 
+type ErrorResponse = {
+  status: number
+  error: string
+  error_description?: string
+}
+
 type GetInitialAccessTokenResponse = {
   scope: string
   access_token: string
@@ -90,7 +96,7 @@ class TriodosClient {
     return data
   }
 
-  public async registerClient({ accessToken, redirectUris, sectorIdentifierUri }: RegisterClientOptions): Promise<RegisterClientResponse> {
+  public async registerClient({ accessToken, redirectUris, sectorIdentifierUri }: RegisterClientOptions): Promise<[RegisterClientResponse, null] | [null, ErrorResponse]> {
     const options: Parameters<typeof this.signedRequest>[1] = {}
     options.method = 'POST'
     options.headers = {}
@@ -99,10 +105,24 @@ class TriodosClient {
     options.headers['Content-type'] = 'application/x-www-form-urlencoded'
     options.body = querystring.stringify({ redirect_uris: redirectUris, sector_identifier_uri: sectorIdentifierUri })
 
-    const endpoint = `${this.baseUrl}auth/${this.tenant}/v1/registration`
-    const { body } = await this.signedRequest(endpoint, options)
-    const data = await body.json()
-    return data
+    try {
+      const endpoint = `${this.baseUrl}auth/${this.tenant}/v1/registration`
+      const { body } = await this.signedRequest(endpoint, options)
+      const data = await body.json() as RegisterClientResponse
+
+      return [data, null]
+    } catch (error) {
+      assert(error instanceof Errors.ResponseStatusCodeError)
+      assert(error.body)
+      assert(!(typeof error.body === 'string'))
+      assert(typeof error.body.error === 'string')
+
+      return [null, {
+        status: error.status,
+        error: error.body.error,
+        error_description: error.body.error_description
+      }]
+    }
   }
 
   private signedRequest: typeof request = (url, options = {}) => {
