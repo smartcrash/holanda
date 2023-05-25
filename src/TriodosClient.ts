@@ -118,6 +118,50 @@ type GetSepaPaymentDetailsResponse = {
   }
 }
 
+type InitiateCrosBorderPaymentOptions = {
+  ipAddr: string
+  redirectUri: string
+  requestBody: {
+    instructedAmount: {
+      currency: string
+      amount: string
+    },
+    debtorAccount: { iban: string },
+    creditorName: string
+    creditorAccount: { iban: string } | { foreignAccountNumber: string },
+    /**
+     * When an IBAN is not supplied for the creditor account of a Foreign Payment,
+     * the creditorAgent field is mandatory.
+    */
+    creditorAgent?: string
+    chargeBearer: string
+    creditorAddress: {
+      streetName: string
+      buildingNumber: string
+      townName: string
+      postcode: string
+      country: string
+    },
+    remittanceInformationUnstructured: string
+    requestedExecutionDate: string
+  }
+}
+
+type InitiateCrosBorderPaymentResponse = {
+  transactionStatus: 'RCVD' | 'PDNG' | 'ACCP' | 'ACTC' | 'ACWC' | 'ACWP' | 'ACSP' | 'ACSC' | 'RJCT' | 'CANC' | 'PATC' | 'ACFC'
+  paymentId: string
+  authorisationId: string
+  debtorAccount: { iban: string },
+  _links: {
+    scaOAuth: string
+    scaRedirect: string
+    scaStatus: string
+    self: string
+    confirmation: string
+    status: string
+  }
+}
+
 
 class TriodosClient {
   private readonly baseUrl = 'https://xs2a-sandbox.triodos.com/'
@@ -187,6 +231,20 @@ class TriodosClient {
   public async getSepaPaymentDetails({ resourceId }: GetSepaPaymentDetailsOptions): Promise<GetSepaPaymentDetailsResponse> {
     const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/payments/sepa-credit-transfers/${resourceId}`
     const response = await this.signedRequest(endpoint)
+    const data = await response.body.json()
+    return data
+  }
+
+  public async initiateCrosBorderPayment({ ipAddr, redirectUri, requestBody }: InitiateCrosBorderPaymentOptions): Promise<InitiateCrosBorderPaymentResponse> {
+    const options: Parameters<typeof this.signedRequest>[1] = {}
+    options.method = 'POST'
+    options.headers = {}
+    options.headers['PSU-IP-Address'] = ipAddr
+    options.headers['TPP-Redirect-URI'] = redirectUri
+    options.body = JSON.stringify(requestBody)
+
+    const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/payments/cross-border-credit-transfers`
+    const response = await this.signedRequest(endpoint, options)
     const data = await response.body.json()
     return data
   }

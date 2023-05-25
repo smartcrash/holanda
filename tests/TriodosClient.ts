@@ -1,5 +1,4 @@
 import test from 'ava';
-import { v4 as uuidv4 } from 'uuid'
 import { TriodosClient, Errors } from '../src/TriodosClient'
 
 const { ResponseStatusCodeError } = Errors
@@ -188,4 +187,82 @@ test.serial('getSepaPaymentDetauls() should return successful response', async (
   t.assert(typeof response._links === 'object')
   t.assert(typeof response._links.self === 'string')
   t.assert(typeof response._links.status === 'string')
+})
+
+test.serial('initiateCrosBorderPayment() should return successful response', async (t) => {
+  const requestBody = {
+    instructedAmount: {
+      currency: "USD",
+      amount: "8.00"
+    },
+    debtorAccount: {
+      iban: "NL37TRIO0320564487"
+    },
+    creditorName: "Mr Tester",
+    creditorAccount: {
+      iban: "NL53RABO7236495824",
+    },
+    chargeBearer: "SHAR",
+    creditorAddress: {
+      streetName: "Test st",
+      buildingNumber: "26",
+      townName: "Test city",
+      postcode: "9999ZZ",
+      country: "US"
+    },
+    remittanceInformationUnstructured: "Remit info",
+    requestedExecutionDate: "2024-03-05"
+  }
+  const response = await client.initiateCrosBorderPayment({
+    ipAddr: '0.0.0.0',
+    redirectUri: 'http://example.com',
+    requestBody
+  })
+
+  t.assert(typeof response === 'object')
+  t.is(response.transactionStatus, 'RCVD')
+  t.assert(typeof response.paymentId === 'string')
+  t.assert(typeof response.authorisationId === 'string')
+  t.assert(typeof response.debtorAccount === 'object')
+  t.assert(typeof response.debtorAccount.iban === 'string')
+  t.assert(typeof response._links === 'object')
+  t.assert(typeof response._links.scaOAuth === 'string')
+  t.assert(typeof response._links.scaRedirect === 'string')
+  t.assert(typeof response._links.scaStatus === 'string')
+  t.assert(typeof response._links.self === 'string')
+  t.assert(typeof response._links.status === 'string')
+})
+
+test.serial('initiateCrosBorderPayment() should throw error if currency is EUR', async (t) => {
+  const requestBody = {
+    instructedAmount: {
+      currency: "EUR",
+      amount: "8.00"
+    },
+    debtorAccount: {
+      iban: "NL37TRIO0320564487"
+    },
+    creditorName: "Mr Tester",
+    creditorAccount: {
+      iban: "NL53RABO7236495824",
+    },
+    chargeBearer: "SHAR",
+    creditorAddress: {
+      streetName: "Test st",
+      buildingNumber: "26",
+      townName: "Test city",
+      postcode: "9999ZZ",
+      country: "US"
+    },
+    remittanceInformationUnstructured: "Remit info",
+    requestedExecutionDate: "2024-03-05"
+  }
+  const error: any = await t.throwsAsync(() => client.initiateCrosBorderPayment({
+    ipAddr: '0.0.0.0',
+    redirectUri: 'http://example.com',
+    requestBody
+  }))
+
+  t.assert(typeof error === 'object')
+  t.is(error.status, 400)
 })
