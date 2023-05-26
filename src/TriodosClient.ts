@@ -69,6 +69,174 @@ class TriodosClient {
   }
 
   /**
+   * @see https://developer.triodos.com/reference/configuration
+   */
+  public async getConfiguration() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/token
+   */
+  public async getToken() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/tokenrevocation
+   */
+  public async revokeToken() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/token
+   */
+  public async getUserInfo() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/getaccount
+   */
+  public async getAccount() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/getaccounts
+   */
+  public async getAccounts() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/getbalances
+   */
+  public async getAccountBalances() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/gettransactions
+   */
+  public async getAccountTransactions() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/getaisauthorisations
+   */
+  public async getAisAuthorisations() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/createaisauthorisation
+   */
+  public async createAisAuthorisations() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/getaisauthorisationstatus
+   */
+  public async getAisAuthorisationStatus() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/submitaisauthorisation
+   */
+  public async submitAisAuthorisation() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/getaisconsent
+   */
+  public async getAisConsent() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/deleteaisconsent
+   */
+  public async deleteAisConsent() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/getaisconsentstatus
+   */
+  public async getAisConsentStatus() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/confirmfundsavailable
+   */
+  public async createConfirmationOfFunds() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/getpiisauthorisations
+   */
+  public async getConfirmationOfFundsAuthorisations() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/createpiisauthorisation
+   */
+  public async createConfirmationOfFundsAuthorisations() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/getpiisauthorisationstatus
+   */
+  public async getConfirmationOfFundsAuthorisationStatus() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/submitpiisauthorisation
+   */
+  public async submitConfirmationOfFundsAuthorisation() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/getpiisconsent
+   */
+  public async getConfirmationOfFundsConsent() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/deletepiisconsent
+   */
+  public async deleteConfirmationOfFundsConsent() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/getpiisconsentstatus
+   */
+  public async getConfirmationOfFundsConsentStatus() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/registerconsentrequest_1
+   */
+  public async registerConfirmationOfFundsConsent() {
+    throw new Error('Not Implemented')
+  }
+
+  /**
    * @see https://developer.triodos.com/reference/initiatesepapayment
    */
   public async initiateSepaPayment({ ipAddr, redirectUri, requestBody }: InitiateSepaPaymentOptions): Promise<InitiateSepaPaymentResponse> {
@@ -151,9 +319,7 @@ class TriodosClient {
       + `signature="${createSign('RSA-SHA256')
         .update(this.getSigningString(headers))
         .sign(privateKey, 'base64')}"`;
-
   }
 }
 
 export { TriodosClient, Errors };
-
