@@ -12,7 +12,7 @@ test.beforeEach(() => client = new TriodosClient({
   tenant: 'nl'
 }))
 
-test.only('returns successful response', async (t) => {
+test.serial('returns successful response', async (t) => {
   const response = await client.getConfiguration()
 
   t.assert(typeof response === 'object')

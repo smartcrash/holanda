@@ -185,3 +185,22 @@ export type GetConfigutationResponse = {
   userinfo_endpoint: string
   userinfo_signing_alg_values_supported: string[]
 }
+
+export type GetAuthorizationOptions = {
+  /** Always set to "code" */
+  response_type?: 'code'
+  client_id: string
+  redirect_uri: string
+  scope: string // TODO: define enum
+  state?: string
+  nonce?: string
+  response_mode?: string
+  prompt?: string
+  max_age?: string
+  code_challenge: string
+  /** Always set to "S256" */
+  code_challenge_method?: 'S256'
+  id_token_hint?: string
+}
+
+export type GetAuthorizationResponse = string

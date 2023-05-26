@@ -4,6 +4,9 @@ import querystring from 'node:querystring';
 import { errors as Errors, request } from 'undici';
 import { v4 as uuidv4 } from 'uuid';
 import {
+  GetAuthorizationOptions,
+  GetAuthorizationResponse,
+  GetConfigutationResponse,
   GetInitialAccessTokenResponse,
   GetSepaPaymentDetailsOptions,
   GetSepaPaymentDetailsResponse,
@@ -16,7 +19,6 @@ import {
   RegisterClientOptions,
   RegisterClientResponse,
   TridosClientOptions,
-  GetConfigutationResponse,
 } from './types';
 
 class TriodosClient {
@@ -77,6 +79,22 @@ class TriodosClient {
     const { body } = await this.signedRequest(endpoint)
     const data = await body.json()
     return data
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/authorizeget
+   */
+  public async getAuthorization(options: GetAuthorizationOptions): Promise<GetAuthorizationResponse> {
+    options.response_type = 'code'
+    options.code_challenge_method = 'S256'
+
+    const endpoint = `${this.baseUrl}auth/${this.tenant}/v1/auth?${querystring.stringify(options)}`
+    const { statusCode, headers } = await this.signedRequest(endpoint)
+
+    assert(statusCode === 302)
+    assert(typeof headers.location === 'string')
+
+    return headers.location
   }
 
   /**
