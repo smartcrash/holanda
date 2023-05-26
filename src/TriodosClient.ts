@@ -1,167 +1,22 @@
-import assert from 'node:assert'
+import assert from 'node:assert';
+import { BinaryLike, createHash, createSign } from 'node:crypto';
 import querystring from 'node:querystring';
-import { createHash, createSign, BinaryLike } from 'node:crypto'
-import { request, errors as Errors } from 'undici'
+import { errors as Errors, request } from 'undici';
 import { v4 as uuidv4 } from 'uuid';
-
-/*
-type AutherizationGetOptions = {
-    tenant: string
-    response_type: string
-    client_id: string
-    redirect_uri: string
-    scope: string
-    code_challenge: string
-    code_challenge_method: string
-    id_token_hint: string
-    state?: string
-    nonce?: string
-    response_mode?: string
-    prompt?: string
-    max_age?: string
-}
-
-type AutherizationGetResponse = void
-*/
-
-type GetInitialAccessTokenResponse = {
-  scope: string
-  access_token: string
-  expires_in: number
-  token_type: string
-  _links: {
-    registration: string
-  }
-}
-
-type TridosClientOptions = {
-  keyId: string
-  tenant: string
-  signingCertificate: string
-  privateKey: string
-}
-
-type RegisterClientOptions = {
-  sectorIdentifierUri?: string
-  redirectUris: string[]
-  accessToken: string
-}
-
-type RegisterClientResponse = {
-  grant_types: string[]
-  application_type: string
-  client_secret_expires_at: number
-  redirect_uris: string[]
-  client_id_issued_at: number
-  client_secret: string
-  tls_client_certificate_bound_access_tokens: boolean
-  token_endpoint_auth_method: string
-  client_id: string
-  response_types: string[]
-  id_token_signed_response_alg: string
-}
-
-type InitiateSepaPaymentResponse = {
-  transactionStatus: 'RCVD' | 'PDNG' | 'ACCP' | 'ACTC' | 'ACWC' | 'ACWP' | 'ACSP' | 'ACSC' | 'RJCT' | 'CANC' | 'PATC' | 'ACFC'
-  paymentId: string
-  authorisationId: string
-  debtorAccount: { iban: string },
-  _links: {
-    scaOAuth: string
-    scaRedirect: string
-    scaStatus: string
-    self: string
-    confirmation: string
-    status: string
-  }
-}
-
-type InitiateSepaPaymentOptions = {
-  ipAddr: string
-  redirectUri: string
-  requestBody: {
-    instructedAmount: {
-      currency: string
-      amount: string
-    }
-    debtorAccount: { iban: string }
-    creditorAccount: { iban: string }
-    creditorName: string
-    requestedExecutionDate: string
-  }
-}
-
-type GetSepaPaymentStatusOptions = {
-  resourceId: string
-}
-
-type GetSepaPaymentStatusResponse = {
-  transactionStatus: 'RCVD' | 'PDNG' | 'ACCP' | 'ACTC' | 'ACWC' | 'ACWP' | 'ACSP' | 'ACSC' | 'RJCT' | 'CANC' | 'PATC' | 'ACFC'
-  /**
-   * This data element is contained, if a funds check has been performed and
-   * if the transactionStatus is `ACTC`, `ACWC` or `ACCP`.
-   */
-  fundsAvailable?: boolean
-}
-
-type GetSepaPaymentDetailsOptions = {
-  resourceId: string
-}
-
-type GetSepaPaymentDetailsResponse = {
-  transactionStatus: 'RCVD' | 'PDNG' | 'ACCP' | 'ACTC' | 'ACWC' | 'ACWP' | 'ACSP' | 'ACSC' | 'RJCT' | 'CANC' | 'PATC' | 'ACFC'
-  paymentId: string
-  debtorAccount: { iban: string },
-  _links: {
-    self: string
-    status: string
-  }
-}
-
-type InitiateCrossBorderPaymentOptions = {
-  ipAddr: string
-  redirectUri: string
-  requestBody: {
-    instructedAmount: {
-      currency: string
-      amount: string
-    },
-    debtorAccount: { iban: string },
-    creditorName: string
-    creditorAccount: { iban: string } | { foreignAccountNumber: string },
-    /**
-     * When an IBAN is not supplied for the creditor account of a Foreign Payment,
-     * the creditorAgent field is mandatory.
-    */
-    creditorAgent?: string
-    chargeBearer: string
-    creditorAddress: {
-      streetName: string
-      buildingNumber: string
-      townName: string
-      postcode: string
-      country: string
-    },
-    remittanceInformationUnstructured: string
-    requestedExecutionDate: string
-  }
-}
-
-type InitiateCrossBorderPaymentResponse = {
-  transactionStatus: 'RCVD' | 'PDNG' | 'ACCP' | 'ACTC' | 'ACWC' | 'ACWP' | 'ACSP' | 'ACSC' | 'RJCT' | 'CANC' | 'PATC' | 'ACFC'
-  paymentId: string
-  authorisationId: string
-  debtorAccount: { iban: string },
-  _links: {
-    scaOAuth: string
-    scaRedirect: string
-    scaStatus: string
-    self: string
-    confirmation: string
-    status: string
-  }
-}
-
+import {
+  GetInitialAccessTokenResponse,
+  GetSepaPaymentDetailsOptions,
+  GetSepaPaymentDetailsResponse,
+  GetSepaPaymentStatusOptions,
+  GetSepaPaymentStatusResponse,
+  InitiateCrossBorderPaymentOptions,
+  InitiateCrossBorderPaymentResponse,
+  InitiateSepaPaymentOptions,
+  InitiateSepaPaymentResponse,
+  RegisterClientOptions,
+  RegisterClientResponse,
+  TridosClientOptions
+} from './types';
 
 class TriodosClient {
   private readonly baseUrl = 'https://xs2a-sandbox.triodos.com/'
@@ -285,4 +140,5 @@ class TriodosClient {
   }
 }
 
-export { TriodosClient, Errors }
+export { TriodosClient, Errors };
+
