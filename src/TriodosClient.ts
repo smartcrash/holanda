@@ -40,6 +40,9 @@ class TriodosClient {
     this.defaultHeaders['Content-Type'] = 'application/json'
   }
 
+  /**
+   * @see https://developer.triodos.com/reference/initialaccesstoken
+   */
   public async getInitialAccessToken(): Promise<GetInitialAccessTokenResponse> {
     const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/onboarding/v1`
     const { body } = await this.signedRequest(endpoint)
@@ -48,6 +51,9 @@ class TriodosClient {
     return data
   }
 
+  /**
+   * @see https://developer.triodos.com/reference/authorizepost_1
+   */
   public async registerClient({ accessToken, redirectUris, sectorIdentifierUri }: RegisterClientOptions): Promise<RegisterClientResponse> {
     const options: Parameters<typeof this.signedRequest>[1] = {}
     options.method = 'POST'
@@ -62,6 +68,9 @@ class TriodosClient {
     return data
   }
 
+  /**
+   * @see https://developer.triodos.com/reference/initiatesepapayment
+   */
   public async initiateSepaPayment({ ipAddr, redirectUri, requestBody }: InitiateSepaPaymentOptions): Promise<InitiateSepaPaymentResponse> {
     const options: Parameters<typeof this.signedRequest>[1] = {}
     options.method = 'POST'
@@ -76,6 +85,9 @@ class TriodosClient {
     return data
   }
 
+  /**
+   * @see https://developer.triodos.com/reference/getstatus_3
+   */
   public async getSepaPaymentStatus({ resourceId }: GetSepaPaymentStatusOptions): Promise<GetSepaPaymentStatusResponse> {
     const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/payments/sepa-credit-transfers/${resourceId}/status`
     const response = await this.signedRequest(endpoint)
@@ -90,6 +102,9 @@ class TriodosClient {
     return data
   }
 
+  /**
+   * @see https://developer.triodos.com/reference/initiatecrossborderpayment
+   */
   public async initiateCrossBorderPayment({ ipAddr, redirectUri, requestBody }: InitiateCrossBorderPaymentOptions): Promise<InitiateCrossBorderPaymentResponse> {
     const options: Parameters<typeof this.signedRequest>[1] = {}
     options.method = 'POST'
