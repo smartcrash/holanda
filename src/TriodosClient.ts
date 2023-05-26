@@ -15,7 +15,8 @@ import {
   InitiateSepaPaymentResponse,
   RegisterClientOptions,
   RegisterClientResponse,
-  TridosClientOptions
+  TridosClientOptions,
+  GetConfigutationResponse,
 } from './types';
 
 class TriodosClient {
@@ -71,8 +72,11 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/configuration
    */
-  public async getConfiguration() {
-    throw new Error('Not Implemented')
+  public async getConfiguration(): Promise<GetConfigutationResponse> {
+    const endpoint = `${this.baseUrl}auth/${this.tenant}/.well-known/openid-configuration`
+    const { body } = await this.signedRequest(endpoint)
+    const data = await body.json()
+    return data
   }
 
   /**
