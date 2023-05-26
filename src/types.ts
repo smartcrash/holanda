@@ -32,7 +32,7 @@ export type TridosClientOptions = {
   keyId: string
   tenant: string
   signingCertificate: string
-  privateKey: string
+  signingKey: string
 }
 
 export type RegisterClientOptions = {

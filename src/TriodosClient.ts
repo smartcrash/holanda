@@ -23,11 +23,11 @@ class TriodosClient {
   private readonly defaultHeaders: Record<string, string> = {}
   private readonly tenant: string
   private readonly keyId: string
-  private readonly privateKey: string
+  private readonly signingKey: string
 
-  constructor({ keyId, tenant, signingCertificate, privateKey }: TridosClientOptions) {
+  constructor({ keyId, tenant, signingCertificate, signingKey }: TridosClientOptions) {
     this.keyId = keyId
-    this.privateKey = privateKey
+    this.signingKey = signingKey
     this.tenant = tenant
 
     const certificateWithoutHeaders = signingCertificate
@@ -295,7 +295,7 @@ class TriodosClient {
     options.headers = Object.assign({}, this.defaultHeaders, options.headers)
     options.headers['X-Request-ID'] = uuidv4()
     options.headers['Digest'] = this.calculateMessageDigest(String(options?.body))
-    options.headers['Signature'] = this.calculateSignature(options.headers, this.keyId, this.privateKey)
+    options.headers['Signature'] = this.calculateSignature(options.headers, this.keyId, this.signingKey)
 
     options.throwOnError = true
 

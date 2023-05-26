@@ -8,7 +8,7 @@ let client: TriodosClient
 test.beforeEach(() => client = new TriodosClient({
   keyId: 'SN=1,CA=CN=Xs2aTpp.com, O=TriodosBank, OID.2.5.4.97=PSDGO-BES-WGXZKBYE, L=Zeist, C=NL',
   signingCertificate: readFileSync(join(__dirname, '/example-cert.pem'), { encoding: 'utf8' }),
-  privateKey: readFileSync(join(__dirname, '/example-key.pem'), { encoding: 'utf8' }),
+  signingKey: readFileSync(join(__dirname, '/example-key.pem'), { encoding: 'utf8' }),
   tenant: 'nl'
 }))
 
