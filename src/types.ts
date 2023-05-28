@@ -204,3 +204,96 @@ export type GetAuthorizationOptions = {
 }
 
 export type GetAuthorizationResponse = string
+
+export type RegisterConsentOptions = {
+  /** The forwarded IP Address header field consists of the corresponding HTTP request IP Address field between PSU and TPP */
+  ipAddr: string
+  /** Where the transaction flow shall be redirected to after a redirect */
+  redirectUri: string
+  bodyParams: {
+    access: {
+      accounts: {
+        /**  If an iban is provided then `ukSortCode` and `ukAccountNumber` should be left empty */
+        iban?: string
+        /** If a `foreignAccountNumber` is provided then `iban`, `ukSortCode` and `ukAccountNumber` should be left empty */
+        foreignAccountNumber?: string
+        /** If `ukSortCode` and `ukAccountNumber` are provided then iban should be left empty */
+        ukSortCode?: string
+        ukAccountNumber?: string
+        currency?: string
+      }[],
+      balances: {
+        /**  If an iban is provided then `ukSortCode` and `ukAccountNumber` should be left empty */
+        iban?: string
+        /** If a `foreignAccountNumber` is provided then `iban`, `ukSortCode` and `ukAccountNumber` should be left empty */
+        foreignAccountNumber?: string
+        /** If `ukSortCode` and `ukAccountNumber` are provided then iban should be left empty */
+        ukSortCode?: string
+        ukAccountNumber?: string
+        currency?: string
+      }[],
+      transactions: {
+        /**  If an iban is provided then `ukSortCode` and `ukAccountNumber` should be left empty */
+        iban?: string
+        /** If a `foreignAccountNumber` is provided then `iban`, `ukSortCode` and `ukAccountNumber` should be left empty */
+        foreignAccountNumber?: string
+        /** If `ukSortCode` and `ukAccountNumber` are provided then iban should be left empty */
+        ukSortCode?: string
+        ukAccountNumber?: string
+        currency?: string
+      }[],
+    }
+    /** `true`, if the consent is for recurring access to the account data. `false`, if the consent is for one access to the account data */
+    recurringIndicator: boolean
+    /**
+     * Valid until date for the requested consent in ISODate Format e.g. "2017-10-30".
+     * If a maximal available date is requested, a date in far future is to be used: "9999-12-31"
+     * */
+    validUntil: string
+    /** This field indicates the requested maximum frequency for an access per day */
+    frequencyPerDay: number
+    /** Sessions are not supported. Should be to `false` */
+    combinedServiceIndicator: boolean
+  }
+}
+
+export type RegisterConsentResposne = {
+  consentStatus: 'received' | 'valid' | 'rejected' | 'expired' | 'terminatedByTpp' | 'revokedByPsu'
+  consentId: string
+  authorisationId: string
+  access: {
+    accounts: {
+      iban?: string
+      foreignAccountNumber?: string
+      ukSortCode?: string
+      ukAccountNumber?: string
+      currency?: string
+    }[],
+    balances: {
+      iban?: string
+      foreignAccountNumber?: string
+      ukSortCode?: string
+      ukAccountNumber?: string
+      currency?: string
+    }[],
+    transactions: {
+      iban?: string
+      foreignAccountNumber?: string
+      ukSortCode?: string
+      ukAccountNumber?: string
+      currency?: string
+    }[],
+  }
+  recurringIndicator: boolean
+  validUntil: string
+  frequencyPerDay: number
+  lastActionDate: string
+  _links: {
+    scaOAuth: string
+    scaRedirect: string
+    scaStatus: string
+    self: string
+    confirmation: string
+    status: string
+  }
+}

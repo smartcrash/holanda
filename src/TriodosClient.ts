@@ -18,6 +18,8 @@ import {
   InitiateSepaPaymentResponse,
   RegisterClientOptions,
   RegisterClientResponse,
+  RegisterConsentOptions,
+  RegisterConsentResposne,
   TridosClientOptions,
 } from './types';
 
@@ -95,6 +97,23 @@ class TriodosClient {
     assert(typeof headers.location === 'string')
 
     return headers.location
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/registerconsentrequest
+   */
+  public async registerConsent({ ipAddr, redirectUri, bodyParams }: RegisterConsentOptions): Promise<RegisterConsentResposne> {
+    const options: Parameters<typeof this.signedRequest>[1] = {}
+    options.method = 'POST'
+    options.headers = {}
+    options.headers['PSU-IP-Address'] = ipAddr
+    options.headers['TPP-Redirect-URI'] = redirectUri
+    options.body = JSON.stringify(bodyParams)
+
+    const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/consents`
+    const { body } = await this.signedRequest(endpoint, options)
+    const data = await body.json()
+    return data
   }
 
   /**
