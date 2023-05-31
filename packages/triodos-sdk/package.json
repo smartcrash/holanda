@@ -1,0 +1,40 @@
+{
+  "name": "@holanda/triodos-sdk",
+  "description": "",
+  "version": "0.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smartcrash/holand.git"
+  },
+  "keywords": [],
+  "author": "smartcrash",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/smartcrash/holand/issues"
+  },
+  "homepage": "https://github.com/smartcrash/holand#readme",
+  "devDependencies": {
+    "@types/node": "^20.2.3",
+    "@types/uuid": "^9.0.1",
+    "ava": "^5.2.0",
+    "tsx": "^3.12.7",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "undici": "^5.22.1",
+    "uuid": "^9.0.0"
+  },
+  "ava": {
+    "extensions": {
+      "ts": "module"
+    },
+    "nodeArguments": [
+      "--loader=tsx"
+    ]
+  }
+}

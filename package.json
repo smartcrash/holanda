@@ -1,10 +1,10 @@
 {
-  "name": "holand",
-  "description": "",
+  "name": "holanda",
   "version": "0.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "ava"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -17,23 +17,7 @@
     "url": "https://github.com/smartcrash/holand/issues"
   },
   "homepage": "https://github.com/smartcrash/holand#readme",
-  "devDependencies": {
-    "@types/node": "^20.2.3",
-    "@types/uuid": "^9.0.1",
-    "ava": "^5.2.0",
-    "tsx": "^3.12.7",
-    "typescript": "^5.0.4"
-  },
   "dependencies": {
-    "undici": "^5.22.1",
-    "uuid": "^9.0.0"
-  },
-  "ava": {
-    "extensions": {
-      "ts": "module"
-    },
-    "nodeArguments": [
-      "--loader=tsx"
-    ]
+    "lerna": "^6.6.2"
   }
 }
