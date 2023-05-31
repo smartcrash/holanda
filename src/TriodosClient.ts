@@ -21,6 +21,8 @@ import {
   RegisterConsentOptions,
   RegisterConsentResposne,
   TridosClientOptions,
+  GetTokenOptions,
+  GetTokenResponse
 } from './types';
 
 class TriodosClient {
@@ -119,8 +121,18 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/token
    */
-  public async getToken() {
-    throw new Error('Not Implemented')
+  public async getToken({ accessToken, bodyParams }: GetTokenOptions): Promise<GetTokenResponse> {
+    const options: Parameters<typeof this.signedRequest>[1] = {}
+    options.method = 'POST'
+    options.headers = {}
+    options.headers.Authorization = `Basic ${accessToken}`
+    options.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    options.body = querystring.stringify(bodyParams)
+
+    const endpoint = `${this.baseUrl}auth/${this.tenant}/v1/token`
+    const { body } = await this.signedRequest(endpoint, options)
+    const data = await body.json()
+    return data
   }
 
   /**

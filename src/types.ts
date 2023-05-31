@@ -297,3 +297,16 @@ export type RegisterConsentResposne = {
     status: string
   }
 }
+
+export type GetTokenOptions = {
+  accessToken: string
+  bodyParams: {
+    redirect_uri?: string
+    code?: string
+    refresh_token?: string
+    grant_type: 'implicit' | 'authorization_code' | 'refresh_token' | 'password' | 'client_credentials' | 'jwt_bearer'
+    code_verifier?: string
+  }
+}
+
+export type GetTokenResponse = {}
