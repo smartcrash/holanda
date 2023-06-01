@@ -312,11 +312,11 @@ export type GetTokenOptions = {
 // TODO: define successful response type
 export type GetTokenResponse = {}
 
-export type GetSepaPaymentAuthorizationStatusOptions = {
+export type GetSepaPaymentAuthorisationStatusOptions = {
   resourceId: string
   authorizationId: string
 }
 
-export type GetSepaPaymentAuthorizationStatusResponse = {
+export type GetSepaPaymentAuthorisationStatusResponse = {
   scaStatus: 'received' | 'psuIdentified' | 'psuAuthenticated' | 'scaMethodSelected' | 'started' | 'unconfirmed' | 'finalised' | 'failed' | 'exempted'
 }
