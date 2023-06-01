@@ -22,7 +22,9 @@ import {
   RegisterConsentResposne,
   TridosClientOptions,
   GetTokenOptions,
-  GetTokenResponse
+  GetTokenResponse,
+  GetSepaPaymentAuthorizationStatusOptions,
+  GetSepaPaymentAuthorizationStatusResponse
 } from './types';
 
 class TriodosClient {
@@ -302,6 +304,16 @@ class TriodosClient {
 
     const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/payments/sepa-credit-transfers`
     const response = await this.signedRequest(endpoint, options)
+    const data = await response.body.json()
+    return data
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/getauthorisation
+   */
+  public async getSepaPaymentAuthorizationStatus({ resourceId, authorizationId }: GetSepaPaymentAuthorizationStatusOptions): Promise<GetSepaPaymentAuthorizationStatusResponse> {
+    const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/bulk-payments/sepa-credit-transfers/${resourceId}/authorisations/${authorizationId}`
+    const response = await this.signedRequest(endpoint)
     const data = await response.body.json()
     return data
   }
