@@ -2,7 +2,7 @@
   "name": "@holanda/triodos-sdk",
   "description": "",
   "version": "0.0.0",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
     "build": "tsc",
     "test": "ava"
