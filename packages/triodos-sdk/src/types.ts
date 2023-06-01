@@ -314,7 +314,7 @@ export type GetTokenResponse = {}
 
 export type GetSepaPaymentAuthorisationStatusOptions = {
   resourceId: string
-  authorizationId: string
+  authorisationId: string
 }
 
 export type GetSepaPaymentAuthorisationStatusResponse = {
