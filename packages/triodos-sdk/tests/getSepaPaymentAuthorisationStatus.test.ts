@@ -16,7 +16,7 @@ test.beforeEach(() => client = new TriodosClient({
 
 test.serial('throws error if resourceId and/or authorizationId does not exists', async (t) => {
   const error: any = await t.throwsAsync(
-    () => client.getSepaPaymentAuthorisationStatus({ resourceId: '', authorizationId: '' }),
+    () => client.getSepaPaymentAuthorisationStatus({ resourceId: '', authorisationId: '' }),
     { instanceOf: ResponseStatusCodeError }
   )
 
