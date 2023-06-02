@@ -123,13 +123,20 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/token
    */
-  public async getToken({ accessToken, bodyParams }: GetTokenOptions): Promise<GetTokenResponse> {
+  public async getToken({ accessToken, clientId, clientSecret, bodyParams }: GetTokenOptions): Promise<GetTokenResponse> {
     const options: Parameters<typeof this.signedRequest>[1] = {}
     options.method = 'POST'
     options.headers = {}
-    options.headers.Authorization = `Basic ${accessToken}`
     options.headers['Content-Type'] = 'application/x-www-form-urlencoded'
     options.body = querystring.stringify(bodyParams)
+
+    if (accessToken) {
+      options.headers.Authorization = `Bearer ${accessToken}`
+    } else {
+      assert(typeof clientId === 'string')
+      assert(typeof clientSecret === 'string')
+      options.headers.Authorization = `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}`
+    }
 
     const endpoint = `${this.baseUrl}auth/${this.tenant}/v1/token`
     const { body } = await this.signedRequest(endpoint, options)

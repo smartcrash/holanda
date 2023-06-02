@@ -299,7 +299,9 @@ export type RegisterConsentResposne = {
 }
 
 export type GetTokenOptions = {
-  accessToken: string
+  accessToken?: string
+  clientId?: string
+  clientSecret?: string
   bodyParams: {
     redirect_uri?: string
     code?: string
