@@ -311,8 +311,13 @@ export type GetTokenOptions = {
   }
 }
 
-// TODO: define successful response type
-export type GetTokenResponse = {}
+export type GetTokenResponse = {
+  access_token: string
+  scope: string
+  id_token: string
+  token_type: string
+  expires_in: number
+}
 
 export type GetSepaPaymentAuthorisationStatusOptions = {
   resourceId: string
