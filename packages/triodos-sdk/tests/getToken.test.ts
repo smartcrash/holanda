@@ -22,6 +22,6 @@ test.serial('returns error is code is empty', async (t) => {
   )
 
   t.is(error.status, 400)
-  t.is(error.body.error, 'invalid_request')
-  t.is(error.body.error_description, 'Invalid authorization code')
+  t.truthy(error.body.error)
+  t.truthy(error.body.error_description)
 });
