@@ -4,6 +4,8 @@ import querystring from 'node:querystring';
 import { errors as Errors, request } from 'undici';
 import { v4 as uuidv4 } from 'uuid';
 import {
+  GetAccountInformationConsentStatusOptions,
+  GetAccountInformationConsentStatusResponse,
   GetAuthorizationOptions,
   GetAuthorizationResponse,
   GetConfigutationResponse,
@@ -320,6 +322,16 @@ class TriodosClient {
    */
   public async getSepaPaymentAuthorisationStatus({ resourceId, authorisationId }: GetSepaPaymentAuthorisationStatusOptions): Promise<GetSepaPaymentAuthorisationStatusResponse> {
     const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/payments/sepa-credit-transfers/${resourceId}/authorisations/${authorisationId}`
+    const response = await this.signedRequest(endpoint)
+    const data = await response.body.json()
+    return data
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/getaisconsentstatus
+   */
+  public async getAccountInformationConsentStatus({ resourceId }: GetAccountInformationConsentStatusOptions): Promise<GetAccountInformationConsentStatusResponse> {
+    const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/consents/${resourceId}/status`
     const response = await this.signedRequest(endpoint)
     const data = await response.body.json()
     return data

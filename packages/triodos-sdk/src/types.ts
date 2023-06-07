@@ -327,3 +327,11 @@ export type GetSepaPaymentAuthorisationStatusOptions = {
 export type GetSepaPaymentAuthorisationStatusResponse = {
   scaStatus: 'received' | 'psuIdentified' | 'psuAuthenticated' | 'scaMethodSelected' | 'started' | 'unconfirmed' | 'finalised' | 'failed' | 'exempted'
 }
+
+export type GetAccountInformationConsentStatusOptions = {
+  resourceId: string
+}
+
+export type GetAccountInformationConsentStatusResponse = {
+  consentStatus: 'received' | 'valid'
+}
