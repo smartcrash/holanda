@@ -304,6 +304,21 @@ export type GetSepaPaymentAuthorisationStatusOptions = {
   authorisationId: string
 }
 
+export type SubmitSepaPaymentAuthorisationStatusOptions = {
+  accessToken: string
+  resourceId: string
+  authorisationId: string
+}
+
+export type SubmitSepaPaymentAuthorisationStatusResponse = {
+  scaStatus: string
+  authorisationId: string
+  _links: {
+    scaStatus: string
+    confirmation: string
+  }
+}
+
 export type GetSepaPaymentAuthorisationStatusResponse = {
   scaStatus: 'received' | 'psuIdentified' | 'psuAuthenticated' | 'scaMethodSelected' | 'started' | 'unconfirmed' | 'finalised' | 'failed' | 'exempted'
 }
@@ -314,4 +329,66 @@ export type GetAccountInformationConsentStatusOptions = {
 
 export type GetAccountInformationConsentStatusResponse = {
   consentStatus: 'received' | 'valid'
+}
+
+
+export type UpdateConsentAuthorisationWithAccessTokenOptions = {
+  accessToken: string
+  resourceId: string
+  authorisationId: string
+}
+
+export type UpdateConsentAuthorisationWithAccessTokenResponse = {
+  scaStatus: 'received' | 'psuIdentified' | 'psuAuthenticated' | 'scaMethodSelected' | 'started' | 'unconfirmed' | 'finalised' | 'failed' | 'exempted'
+  authorisationId: string
+  _links: {
+    scaStatus: string
+    confirmation: string
+  }
+}
+
+export type GetAccountsOptions = {
+  accessToken: string
+  consentId: string
+  /** Not supported, should be unset */
+  withBalance?: boolean
+  ipAddr?: string
+}
+
+export type GetAccountsResponse = {
+  accounts: {
+    iban: string
+    currency: string
+    resourceId: string
+    cashAccountType: string
+    name: string
+    status: string
+    _links: {
+      account: string
+      transactions: string
+      balances: string
+    }
+  }[],
+}
+
+export type GetAccountBalancesOptions = {
+  accessToken: string
+  accountId: string
+  consentId: string
+  ipAddr?: string
+}
+
+export type GetAccountBalancesResponse = {
+  account: {
+    iban: string
+  }
+  balances: {
+    balanceType: 'closingBooked' | 'expected' | 'openingBooked' | 'interimAvailable' | 'forwardAvailable'
+    balanceAmount: {
+      currency: string
+      amount: string
+    }
+    referenceDate: string
+    creditLimitIncluded: boolean
+  }[]
 }

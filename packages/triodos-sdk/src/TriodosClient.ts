@@ -4,16 +4,24 @@ import querystring from 'node:querystring';
 import { errors as Errors, request } from 'undici';
 import { v4 as uuidv4 } from 'uuid';
 import {
+  GetAccountBalancesOptions,
+  GetAccountBalancesResponse,
   GetAccountInformationConsentStatusOptions,
   GetAccountInformationConsentStatusResponse,
+  GetAccountsOptions,
+  GetAccountsResponse,
   GetAuthorizationOptions,
   GetAuthorizationResponse,
   GetConfigutationResponse,
   GetInitialAccessTokenResponse,
+  GetSepaPaymentAuthorisationStatusOptions,
+  GetSepaPaymentAuthorisationStatusResponse,
   GetSepaPaymentDetailsOptions,
   GetSepaPaymentDetailsResponse,
   GetSepaPaymentStatusOptions,
   GetSepaPaymentStatusResponse,
+  GetTokenOptions,
+  GetTokenResponse,
   InitiateCrossBorderPaymentOptions,
   InitiateCrossBorderPaymentResponse,
   InitiateSepaPaymentOptions,
@@ -22,11 +30,11 @@ import {
   RegisterClientResponse,
   RegisterConsentOptions,
   RegisterConsentResposne,
+  SubmitSepaPaymentAuthorisationStatusOptions,
+  SubmitSepaPaymentAuthorisationStatusResponse,
   TridosClientOptions,
-  GetTokenOptions,
-  GetTokenResponse,
-  GetSepaPaymentAuthorisationStatusOptions,
-  GetSepaPaymentAuthorisationStatusResponse
+  UpdateConsentAuthorisationWithAccessTokenOptions,
+  UpdateConsentAuthorisationWithAccessTokenResponse
 } from './types';
 
 class TriodosClient {
@@ -170,15 +178,33 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/getaccounts
    */
-  public async getAccounts() {
-    throw new Error('Not Implemented')
+  public async getAccounts({ accessToken, consentId, ipAddr, withBalance: _withBalance }: GetAccountsOptions): Promise<GetAccountsResponse> {
+    const options: Parameters<typeof this.signedRequest>[1] = {}
+    options.headers = {}
+    if (ipAddr) options.headers['PSU-IP-Address'] = ipAddr
+    options.headers['Consent-ID'] = consentId
+    options.headers['Authorization'] = `Bearer ${accessToken}`
+
+    const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/accounts`
+    const { body } = await this.signedRequest(endpoint, options)
+    const data = await body.json()
+    return data
   }
 
   /**
    * @see https://developer.triodos.com/reference/getbalances
    */
-  public async getAccountBalances() {
-    throw new Error('Not Implemented')
+  public async getAccountBalances({ accessToken, accountId, consentId, ipAddr }: GetAccountBalancesOptions): Promise<GetAccountBalancesResponse> {
+    const options: Parameters<typeof this.signedRequest>[1] = {}
+    options.headers = {}
+    if (ipAddr) options.headers['PSU-IP-Address'] = ipAddr
+    options.headers['Consent-ID'] = consentId
+    options.headers['Authorization'] = `Bearer ${accessToken}`
+
+    const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/accounts/${accountId}/balances`
+    const { body } = await this.signedRequest(endpoint, options)
+    const data = await body.json()
+    return data
   }
 
   /**
@@ -333,6 +359,34 @@ class TriodosClient {
   public async getAccountInformationConsentStatus({ resourceId }: GetAccountInformationConsentStatusOptions): Promise<GetAccountInformationConsentStatusResponse> {
     const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/consents/${resourceId}/status`
     const response = await this.signedRequest(endpoint)
+    const data = await response.body.json()
+    return data
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/submitaisauthorisation
+   */
+  public async updateConsentAuthorisationWithAccessToken({ accessToken, resourceId, authorisationId }: UpdateConsentAuthorisationWithAccessTokenOptions): Promise<UpdateConsentAuthorisationWithAccessTokenResponse> {
+    const options: Parameters<typeof this.signedRequest>[1] = {}
+    options.method = 'PUT'
+    options.headers = { Authorization: `Bearer ${accessToken}` }
+
+    const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/consents/${resourceId}/authorisations/${authorisationId}`
+    const response = await this.signedRequest(endpoint, options)
+    const data = await response.body.json()
+    return data
+  }
+
+  /**
+   * @see https://developer.triodos.com/reference/submitauthorisation
+   */
+  public async submitSepaPaymentAuthorisation({ accessToken, resourceId, authorisationId }: SubmitSepaPaymentAuthorisationStatusOptions): Promise<SubmitSepaPaymentAuthorisationStatusResponse> {
+    const options: Parameters<typeof this.signedRequest>[1] = {}
+    options.method = 'PUT'
+    options.headers = { Authorization: `Bearer ${accessToken}` }
+
+    const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/payments/sepa-credit-transfers/${resourceId}/authorisations/${authorisationId}`
+    const response = await this.signedRequest(endpoint, options)
     const data = await response.body.json()
     return data
   }
