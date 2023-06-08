@@ -1,23 +1,3 @@
-/*
-export type AutherizationGetOptions = {
-    tenant: string
-    response_type: string
-    client_id: string
-    redirect_uri: string
-    scope: string
-    code_challenge: string
-    code_challenge_method: string
-    id_token_hint: string
-    state?: string
-    nonce?: string
-    response_mode?: string
-    prompt?: string
-    max_age?: string
-}
-
-export type AutherizationGetResponse = void
-*/
-
 export type GetInitialAccessTokenResponse = {
   scope: string
   access_token: string
