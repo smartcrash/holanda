@@ -8,6 +8,8 @@ import {
   GetAccountBalancesResponse,
   GetAccountInformationConsentStatusOptions,
   GetAccountInformationConsentStatusResponse,
+  GetAccountTransactionsOptions,
+  GetAccountTransactionsResponse,
   GetAccountsOptions,
   GetAccountsResponse,
   GetAuthorizationOptions,
@@ -210,8 +212,22 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/gettransactions
    */
-  public async getAccountTransactions() {
-    throw new Error('Not Implemented')
+  public async getAccountTransactions({ accessToken, consentId, ipAddr, accountId, bookingStatus, dateFrom, dateTo, withBalance: _withBalance, deltaList: _deltaList, entryReferenceFrom: _entryReferenceFrom }: GetAccountTransactionsOptions): Promise<GetAccountTransactionsResponse> {
+    const options: Parameters<typeof this.signedRequest>[1] = {}
+    options.headers = {}
+    if (ipAddr) options.headers['PSU-IP-Address'] = ipAddr
+    options.headers['Consent-ID'] = consentId
+    options.headers['Authorization'] = `Bearer ${accessToken}`
+
+    const params = new URLSearchParams();
+    params.append("bookingStatus", bookingStatus)
+    params.append("dateFrom", dateFrom.toISOString().slice(0, 10))
+    if (dateTo) params.append("dateTo", dateTo.toISOString().slice(0, 10))
+
+    const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/accounts/${accountId}/transactions?${params.toString()}`
+    const { body } = await this.signedRequest(endpoint, options)
+    const data = await body.json()
+    return data
   }
 
   /**
@@ -460,4 +476,4 @@ class TriodosClient {
   }
 }
 
-export { TriodosClient, Errors };
+export { Errors, TriodosClient };

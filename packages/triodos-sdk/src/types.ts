@@ -392,3 +392,58 @@ export type GetAccountBalancesResponse = {
     creditLimitIncluded: boolean
   }[]
 }
+
+export type GetAccountTransactionsOptions = {
+  consentId: string
+  accessToken: string
+  ipAddr?: string
+  accountId: string
+  bookingStatus: 'booked' | 'pending' | 'both'
+  dateFrom: Date
+  /** End date (inclusive the data dateTo) of the transaction list, default is now if not given. */
+  dateTo?: Date
+  /** Not supported, should be unset */
+  withBalance?: boolean
+  /** Not supported, should be unset */
+  entryReferenceFrom?: string
+  /** Not supported, should be unset */
+  deltaList?: boolean
+  /** Pagination edge token, to be used when paging through transactions */
+  edgeToken: {}
+}
+
+type Transaction = {
+  transactionId: string
+  bookingDate: string
+  valueDate: string
+  transactionAmount: {
+    currency: string
+    amount: string
+  }
+  creditorName: string
+  creditorAccount: {
+    iban: string
+  }
+  debtorName?: string
+  debtorAccount?: {
+    iban: string
+  }
+  remittanceInformationUnstructured: string
+  proprietaryBankTransactionCode: string
+  endToEndIdentification: string
+}
+
+export type GetAccountTransactionsResponse = {
+  account: {
+    iban: string
+  }
+  transactions: {
+    booked?: Transaction[]
+    pending?: Transaction[]
+    _links: {
+      account: string
+      first: string
+      next?: string
+    }
+  }
+}
