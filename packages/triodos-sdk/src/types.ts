@@ -420,8 +420,8 @@ type Transaction = {
     currency: string
     amount: string
   }
-  creditorName: string
-  creditorAccount: {
+  creditorName?: string
+  creditorAccount?: {
     iban: string
   }
   debtorName?: string
