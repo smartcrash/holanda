@@ -447,3 +447,9 @@ export type GetAccountTransactionsResponse = {
     }
   }
 }
+
+export type DeleteAccountInformationServiceConsentOptions = {
+  resourceId: string
+}
+
+export type DeleteAccountInformationServiceConsentResponse = boolean

@@ -4,6 +4,8 @@ import querystring from 'node:querystring';
 import { errors as Errors, request } from 'undici';
 import { v4 as uuidv4 } from 'uuid';
 import {
+  DeleteAccountInformationServiceConsentOptions,
+  DeleteAccountInformationServiceConsentResponse,
   GetAccountBalancesOptions,
   GetAccountBalancesResponse,
   GetAccountInformationConsentStatusOptions,
@@ -268,8 +270,11 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/deleteaisconsent
    */
-  public async deleteAisConsent() {
-    throw new Error('Not Implemented')
+  public async deleteAccountInformationServiceConsent({ resourceId }: DeleteAccountInformationServiceConsentOptions): Promise<DeleteAccountInformationServiceConsentResponse> {
+    const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/consents/${resourceId}`
+    const { statusCode } = await this.signedRequest(endpoint, { method: 'DELETE' })
+
+    return statusCode === 204
   }
 
   /**
