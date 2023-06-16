@@ -49,4 +49,5 @@ export type ABNClientPostSEPAPaymentOptions = {
 export type ABNClientPostSEPAPaymentResponse = {
   transactionId: string
   status: "STORED" | "AUTHORIZED" | "INPROGRESS" | "SCHEDULED" | "EXECUTED" | "REJECTED" | "UNKNOWN" | "CANCEL"
+  accountNumber?: string
 }
