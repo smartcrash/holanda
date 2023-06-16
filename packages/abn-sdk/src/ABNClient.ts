@@ -1,38 +1,44 @@
 import querystring from 'node:querystring';
 import { Client, errors as Errors } from "undici";
-import { ABNClientOptions, ABNClientRequestAccessTokenOptions, ABNClientRequestAccessTokenResponse, ABNClientRequestAuthTokenOptions, ABNClientRequestAuthTokenResponse } from './types';
+import { ABNClientOptions, ABNClientPostSEPAPaymentOptions, ABNClientPostSEPAPaymentResponse, ABNClientRequestAccessTokenOptions, ABNClientRequestAccessTokenResponse, ABNClientRequestAuthTokenOptions, ABNClientRequestAuthTokenResponse } from './types';
 
-class AbnClient {
-  private readonly client: Client
-  private readonly authUrl = 'https://auth-mtls-sandbox.abnamro.com'
-  // private readonly apiUrl = 'https://api-sandbox.abnamro.com/v1/'
+class ABNClient {
   private readonly clientId: string
+  private readonly apiKey: string
 
-  constructor({ clientId, privateKey, publicCertificate }: ABNClientOptions) {
+  private readonly authUrl = 'https://auth-mtls-sandbox.abnamro.com'
+  private readonly apiUrl = 'https://api-sandbox.abnamro.com'
+  private readonly auth: Client
+  private readonly api: Client
+
+  constructor({ apiKey, clientId, privateKey, publicCertificate }: ABNClientOptions) {
     this.clientId = clientId
-    this.client = new Client(this.authUrl,
-      {
-        connect: {
-          key: privateKey,
-          cert: publicCertificate
-        }
+    this.apiKey = apiKey
+
+    const options = {
+      connect: {
+        key: privateKey,
+        cert: publicCertificate
       }
-    )
+    }
+    this.auth = new Client(this.authUrl, options)
+    this.api = new Client(this.apiUrl, options)
   }
 
   /**
    * @see https://developer.abnamro.com/api-products/authorization-code#tag/Access-and-refresh-token/operation/requestAccessToken
    */
-  public async requestAccessToken({ grantType, code, redirectUri, refreshToken }: ABNClientRequestAccessTokenOptions): Promise<ABNClientRequestAccessTokenResponse> {
+  public async requestAccessToken({ grantType, code, redirectUri, refreshToken, scope }: ABNClientRequestAccessTokenOptions): Promise<ABNClientRequestAccessTokenResponse> {
     const queryParams: Record<string, string | undefined> = {
       client_id: this.clientId,
       grant_type: grantType,
       code,
       redirect_uri: redirectUri,
-      refresh_token: refreshToken
+      refresh_token: refreshToken,
+      scope: scope?.join(' ')
     }
 
-    const { body } = await this.client.request({
+    const { body } = await this.auth.request({
       path: '/as/token.oauth2',
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -58,7 +64,7 @@ class AbnClient {
       bank
     }
 
-    const { headers } = await this.client.request({
+    const { headers } = await this.auth.request({
       path: `/as/authorization.oauth2`,
       method: 'GET',
       query: queryParams,
@@ -67,7 +73,26 @@ class AbnClient {
 
     return headers['location'] as string
   }
+
+  /**
+   * @see https://developer.abnamro.com/api-products/payment-initiation-psd2/reference-documentation#section/Tutorials/Single-payments-tutorial
+   */
+  public async postSEPAPayment({ accessToken, ...bodyParams }: ABNClientPostSEPAPaymentOptions): Promise<ABNClientPostSEPAPaymentResponse> {
+    const { body } = await this.api.request({
+      path: '/v1/payments',
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'API-Key': this.apiKey,
+      },
+      body: JSON.stringify(bodyParams),
+      throwOnError: true,
+    })
+
+    return body.json();
+  }
 }
 
-export { AbnClient as ABNClient, Errors };
-
+export { ABNClient, Errors };

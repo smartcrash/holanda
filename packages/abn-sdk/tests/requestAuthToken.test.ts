@@ -7,6 +7,7 @@ import { Scopes } from '../src/enums';
 let client: ABNClient
 
 test.beforeEach(() => client = new ABNClient({
+  apiKey: 'u8cVObtL8jnUbdAGc4ji1ybp08OoCrQg',
   clientId: 'TPP_test',
   publicCertificate: readFileSync(join(__dirname, '/public-certificate.pem'), { encoding: 'utf8' }),
   privateKey: readFileSync(join(__dirname, '/private-key.pem'), { encoding: 'utf8' }),
