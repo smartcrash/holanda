@@ -6,5 +6,5 @@
     "skipLibCheck": true,
     "declaration": true
   },
-  "include": ["src/**/*", "tests/requestAccessToken.test.ts"]
+  "include": ["src/**/*"]
 }
