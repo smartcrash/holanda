@@ -1,6 +1,6 @@
 import querystring from 'node:querystring';
 import { Client, errors as Errors } from "undici";
-import { ABNClientGetConsentInfoOptions, ABNClientGetConsentInfoResponse, ABNClientOptions, ABNClientPostSEPAPaymentOptions, ABNClientPostSEPAPaymentResponse, ABNClientRequestAccessTokenOptions, ABNClientRequestAccessTokenResponse, ABNClientRequestAuthTokenOptions, ABNClientRequestAuthTokenResponse, GetBalancesOptions, GetBalancesResponse, GetDetailsOptions, GetDetailsResponse, GetFundsOptions, GetFundsResponse, GetSEPAPaymentOptions, GetSEPAPaymentResponse, GetTransactionsOptions, GetTransactionsResponse, PutSEPAPaymentOptions, PutSEPAPaymentResponse } from './types';
+import { ABNClientGetConsentInfoOptions, ABNClientGetConsentInfoResponse, ABNClientOptions, ABNClientPostSEPAPaymentOptions, ABNClientPostSEPAPaymentResponse, ABNClientRequestAccessTokenOptions, ABNClientRequestAccessTokenResponse, ABNClientRequestAuthTokenOptions, ABNClientRequestAuthTokenResponse, DeleteSEPAPaymentOptions, DeleteSEPAPaymentResponse, GetBalancesOptions, GetBalancesResponse, GetDetailsOptions, GetDetailsResponse, GetFundsOptions, GetFundsResponse, GetSEPAPaymentOptions, GetSEPAPaymentResponse, GetTransactionsOptions, GetTransactionsResponse, PutSEPAPaymentOptions, PutSEPAPaymentResponse } from './types';
 
 class ABNClient {
   private readonly clientId: string
@@ -228,6 +228,23 @@ class ABNClient {
     })
 
     return body.json();
+  }
+
+  /**
+   * @see https://developer.abnamro.com/api-products/payment-initiation-psd2/reference-documentation#tag/Single-payments/operation/deleteSEPAPayment
+   */
+  public async deleteSEPAPayment({ transactionId, accessToken }: DeleteSEPAPaymentOptions): Promise<DeleteSEPAPaymentResponse> {
+    const { statusCode } = await this.api.request({
+      path: `/v1/payments/${transactionId}`,
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'API-Key': this.apiKey,
+      },
+      throwOnError: true,
+    })
+
+    return statusCode === 200
   }
 }
 

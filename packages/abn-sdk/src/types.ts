@@ -167,3 +167,10 @@ export type GetFundsResponse = {
   currency: string
   available: boolean
 }
+
+export type DeleteSEPAPaymentOptions = {
+  transactionId: string
+  accessToken: string
+}
+
+export type DeleteSEPAPaymentResponse = boolean
