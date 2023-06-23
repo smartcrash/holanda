@@ -1,6 +1,6 @@
 import querystring from 'node:querystring';
 import { Client, errors as Errors } from "undici";
-import { ABNClientGetConsentInfoOptions, ABNClientGetConsentInfoResponse, ABNClientOptions, ABNClientPostSEPAPaymentOptions, ABNClientPostSEPAPaymentResponse, ABNClientRequestAccessTokenOptions, ABNClientRequestAccessTokenResponse, ABNClientRequestAuthTokenOptions, ABNClientRequestAuthTokenResponse, GetBalancesOptions, GetBalancesResponse, GetDetailsOptions, GetDetailsResponse, GetSEPAPaymentOptions, GetSEPAPaymentResponse, GetTransactionsOptions, GetTransactionsResponse, PutSEPAPaymentOptions, PutSEPAPaymentResponse } from './types';
+import { ABNClientGetConsentInfoOptions, ABNClientGetConsentInfoResponse, ABNClientOptions, ABNClientPostSEPAPaymentOptions, ABNClientPostSEPAPaymentResponse, ABNClientRequestAccessTokenOptions, ABNClientRequestAccessTokenResponse, ABNClientRequestAuthTokenOptions, ABNClientRequestAuthTokenResponse, GetBalancesOptions, GetBalancesResponse, GetDetailsOptions, GetDetailsResponse, GetFundsOptions, GetFundsResponse, GetSEPAPaymentOptions, GetSEPAPaymentResponse, GetTransactionsOptions, GetTransactionsResponse, PutSEPAPaymentOptions, PutSEPAPaymentResponse } from './types';
 
 class ABNClient {
   private readonly clientId: string
@@ -196,6 +196,28 @@ class ABNClient {
 
     const { body } = await this.api.request({
       path: `/v1/accounts/${accountNumber}/transactions?${queryParams.toString()}`,
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'API-Key': this.apiKey,
+      },
+      throwOnError: true,
+    })
+
+    return body.json();
+  }
+
+  /**
+   * @see https://developer.abnamro.com/api-products/account-information-psd2/reference-documentation#tag/Check-availability-of-funds/operation/getFunds
+   */
+  public async getFunds({ accessToken, accountNumber, amount, currency }: GetFundsOptions): Promise<GetFundsResponse> {
+    const queryParams = new URLSearchParams()
+    queryParams.set('amount', amount.toString())
+    if (currency) queryParams.set('currency', currency)
+
+    const { body } = await this.api.request({
+      path: `/v1/accounts/${accountNumber}/funds?${queryParams.toString()}`,
       method: 'GET',
       headers: {
         'Accept': 'application/json',

@@ -153,3 +153,17 @@ export type GetTransactionsResponse = {
     transactionId: string
   }[]
 }
+
+export type GetFundsOptions = {
+  accountNumber: string
+  accessToken: string
+  amount: number
+  currency?: string
+}
+
+export type GetFundsResponse = {
+  accountNumber: string
+  amount: number
+  currency: string
+  available: boolean
+}
