@@ -1,4 +1,4 @@
-import { Scopes } from "./enums"
+import { ABNScopes } from "./enums"
 
 export type ABNClientOptions = {
   apiKey: string
@@ -9,7 +9,7 @@ export type ABNClientOptions = {
 
 export type ABNClientRequestAuthTokenOptions = {
   /** Scopes for which the access token is issued. */
-  scope: Scopes[]
+  scope: ABNScopes[]
   /** Value must be 'code'. It indicates which grant to execute. */
   responseType: string
   flow?: string
@@ -26,7 +26,7 @@ export type ABNClientRequestAccessTokenOptions = {
   grantType: string,
   redirectUri?: string,
   refreshToken?: string
-  scope?: Scopes[]
+  scope?: ABNScopes[]
 }
 
 export type ABNClientRequestAccessTokenResponse = {

@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import test from 'ava';
 import { ABNClient, Errors } from '../src/ABNClient'
-import { Scopes } from '../src/enums';
+import { ABNScopes } from '../src/enums';
 
 const { ResponseStatusCodeError } = Errors
 
@@ -18,7 +18,7 @@ test.beforeEach(() => client = new ABNClient({
 test.serial('should return successful response', async (t) => {
   const { access_token: accessToken } = await client.requestAccessToken({
     grantType: 'client_credentials',
-    scope: [Scopes.PostSEPAPayment],
+    scope: [ABNScopes.PostSEPAPayment],
   })
 
   const response = await client.postSEPAPayment({

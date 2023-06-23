@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import test from 'ava';
 import { ABNClient } from '../src/ABNClient'
-import { Scopes } from '../src/enums';
+import { ABNScopes } from '../src/enums';
 
 let client: ABNClient
 
@@ -15,7 +15,7 @@ test.beforeEach(() => client = new ABNClient({
 
 test.serial('should return redirect URL', async (t) => {
   const response = await client.requestAuthCode({
-    scope: [Scopes.PostSEPAPayment, Scopes.PostSEPAStandingOrderPayment, Scopes.PostXBorderPayment],
+    scope: [ABNScopes.PostSEPAPayment, ABNScopes.PostSEPAStandingOrderPayment, ABNScopes.PostXBorderPayment],
     redirectUri: "https://localhost/auth",
     responseType: 'code'
   })
