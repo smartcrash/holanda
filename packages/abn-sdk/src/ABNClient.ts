@@ -1,6 +1,6 @@
 import querystring from 'node:querystring';
 import { Client, errors as Errors } from "undici";
-import { ABNClientGetConsentInfoOptions, ABNClientGetConsentInfoResponse, ABNClientOptions, ABNClientPostSEPAPaymentOptions, ABNClientPostSEPAPaymentResponse, ABNClientRequestAccessTokenOptions, ABNClientRequestAccessTokenResponse, ABNClientRequestAuthTokenOptions, ABNClientRequestAuthTokenResponse, GetSEPAPaymentOptions, GetSEPAPaymentResponse, PutSEPAPaymentOptions, PutSEPAPaymentResponse } from './types';
+import { ABNClientGetConsentInfoOptions, ABNClientGetConsentInfoResponse, ABNClientOptions, ABNClientPostSEPAPaymentOptions, ABNClientPostSEPAPaymentResponse, ABNClientRequestAccessTokenOptions, ABNClientRequestAccessTokenResponse, ABNClientRequestAuthTokenOptions, ABNClientRequestAuthTokenResponse, GetBalancesOptions, GetBalancesResponse, GetDetailsOptions, GetDetailsResponse, GetSEPAPaymentOptions, GetSEPAPaymentResponse, GetTransactionsOptions, GetTransactionsResponse, PutSEPAPaymentOptions, PutSEPAPaymentResponse } from './types';
 
 class ABNClient {
   private readonly clientId: string
@@ -136,6 +136,66 @@ class ABNClient {
   public async getSEPAPayment({ transactionId, accessToken }: GetSEPAPaymentOptions): Promise<GetSEPAPaymentResponse> {
     const { body } = await this.api.request({
       path: `/v1/payments/${transactionId}`,
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'API-Key': this.apiKey,
+      },
+      throwOnError: true,
+    })
+
+    return body.json();
+  }
+
+  /**
+   * @see https://developer.abnamro.com/api-products/account-information-psd2/reference-documentation#tag/Account-information-services/operation/getDetails
+   */
+  public async getDetails({ accountNumber, accessToken }: GetDetailsOptions): Promise<GetDetailsResponse> {
+    const { body } = await this.api.request({
+      path: `/v1/accounts/${accountNumber}/details`,
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'API-Key': this.apiKey,
+      },
+      throwOnError: true,
+    })
+
+    return body.json();
+  }
+
+  /**
+   * @see https://developer.abnamro.com/api-products/account-information-psd2/reference-documentation#tag/Account-information-services/operation/getBalances
+   */
+  public async getBalances({ accountNumber, accessToken }: GetBalancesOptions): Promise<GetBalancesResponse> {
+    const { body } = await this.api.request({
+      path: `/v1/accounts/${accountNumber}/balances`,
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'API-Key': this.apiKey,
+      },
+      throwOnError: true,
+    })
+
+    return body.json();
+  }
+
+  /**
+   * @see https://developer.abnamro.com/api-products/account-information-psd2/reference-documentation#tag/Account-information-services/operation/getTransactions
+   */
+  public async getTransactions({ accountNumber, accessToken, bookDateFrom, bookDateTo, nextPageKey, includeProperties }: GetTransactionsOptions): Promise<GetTransactionsResponse> {
+    const queryParams = new URLSearchParams()
+    if (bookDateFrom) queryParams.set('bookDateFrom', typeof bookDateFrom === 'string' ? bookDateFrom : bookDateFrom.toISOString().slice(0, 10))
+    if (bookDateTo) queryParams.set('bookDateTo', typeof bookDateTo === 'string' ? bookDateTo : bookDateTo.toISOString().slice(0, 10))
+    if (nextPageKey) queryParams.set('nextPageKey', nextPageKey)
+    if (includeProperties && includeProperties.length) queryParams.set('includeProperties ', includeProperties.join(','))
+
+    const { body } = await this.api.request({
+      path: `/v1/accounts/${accountNumber}/transactions?${queryParams.toString()}`,
       method: 'GET',
       headers: {
         'Accept': 'application/json',
