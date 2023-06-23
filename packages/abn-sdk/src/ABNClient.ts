@@ -1,6 +1,6 @@
 import querystring from 'node:querystring';
 import { Client, errors as Errors } from "undici";
-import { ABNClientGetConsentInfoOptions, ABNClientGetConsentInfoResponse, ABNClientOptions, ABNClientPostSEPAPaymentOptions, ABNClientPostSEPAPaymentResponse, ABNClientRequestAccessTokenOptions, ABNClientRequestAccessTokenResponse, ABNClientRequestAuthTokenOptions, ABNClientRequestAuthTokenResponse, PutSEPAPaymentOptions, PutSEPAPaymentResponse } from './types';
+import { ABNClientGetConsentInfoOptions, ABNClientGetConsentInfoResponse, ABNClientOptions, ABNClientPostSEPAPaymentOptions, ABNClientPostSEPAPaymentResponse, ABNClientRequestAccessTokenOptions, ABNClientRequestAccessTokenResponse, ABNClientRequestAuthTokenOptions, ABNClientRequestAuthTokenResponse, GetSEPAPaymentOptions, GetSEPAPaymentResponse, PutSEPAPaymentOptions, PutSEPAPaymentResponse } from './types';
 
 class ABNClient {
   private readonly clientId: string
@@ -128,7 +128,24 @@ class ABNClient {
     })
 
     return body.json();
+  }
 
+  /**
+   * @see https://developer.abnamro.com/api-products/payment-initiation-psd2/reference-documentation#tag/Single-payments/operation/getSEPAPayment
+   */
+  public async getSEPAPayment({ transactionId, accessToken }: GetSEPAPaymentOptions): Promise<GetSEPAPaymentResponse> {
+    const { body } = await this.api.request({
+      path: `/v1/payments/${transactionId}`,
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'API-Key': this.apiKey,
+      },
+      throwOnError: true,
+    })
+
+    return body.json();
   }
 }
 

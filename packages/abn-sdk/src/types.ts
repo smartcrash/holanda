@@ -77,3 +77,15 @@ export type PutSEPAPaymentResponse = {
   accountNumber: string
   status: "STORED" | "AUTHORIZED" | "INPROGRESS" | "SCHEDULED" | "EXECUTED" | "REJECTED" | "UNKNOWN" | "CANCEL"
 }
+
+export type GetSEPAPaymentOptions = {
+  transactionId: string
+  accessToken: string
+}
+
+export type GetSEPAPaymentResponse = {
+  transactionId: string
+  accountHolderName: string
+  accountNumber: string
+  status: "STORED" | "AUTHORIZED" | "INPROGRESS" | "SCHEDULED" | "EXECUTED" | "REJECTED" | "UNKNOWN" | "CANCEL"
+}
