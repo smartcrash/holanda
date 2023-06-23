@@ -1,6 +1,6 @@
 import querystring from 'node:querystring';
 import { Client, errors as Errors } from "undici";
-import { ABNClientGetConsentInfoOptions, ABNClientGetConsentInfoResponse, ABNClientOptions, ABNClientPostSEPAPaymentOptions, ABNClientPostSEPAPaymentResponse, ABNClientRequestAccessTokenOptions, ABNClientRequestAccessTokenResponse, ABNClientRequestAuthTokenOptions, ABNClientRequestAuthTokenResponse, DeleteSEPAPaymentOptions, DeleteSEPAPaymentResponse, GetBalancesOptions, GetBalancesResponse, GetDetailsOptions, GetDetailsResponse, GetFundsOptions, GetFundsResponse, GetSEPAPaymentOptions, GetSEPAPaymentResponse, GetTransactionsOptions, GetTransactionsResponse, PutSEPAPaymentOptions, PutSEPAPaymentResponse } from './types';
+import { ABNClientGetConsentInfoOptions, ABNClientGetConsentInfoResponse, ABNClientOptions, ABNClientPostSEPAPaymentOptions, ABNClientPostSEPAPaymentResponse, ABNClientRequestAccessTokenOptions, ABNClientRequestAccessTokenResponse, ABNClientRequestAuthTokenOptions, ABNClientRequestAuthTokenResponse, DeleteSEPAPaymentOptions, DeleteSEPAPaymentResponse, GetBalancesOptions, GetBalancesResponse, GetDetailsOptions, GetDetailsResponse, GetFundsOptions, GetFundsResponse, GetSEPAPaymentOptions, GetSEPAPaymentResponse, GetTransactionsOptions, GetTransactionsResponse, PostXborderPaymentOptions, PutSEPAPaymentOptions, PutSEPAPaymentResponse, PutXborderPaymentResponse } from './types';
 
 class ABNClient {
   private readonly clientId: string
@@ -245,6 +245,44 @@ class ABNClient {
     })
 
     return statusCode === 200
+  }
+
+  /**
+   * @see https://developer.abnamro.com/api-products/payment-initiation-psd2/reference-documentation#tag/Single-payments/operation/postXborderPayment
+   */
+  public async postXborderPayment({ accessToken, ...bodyParams }: PostXborderPaymentOptions): Promise<PostXborderPaymentOptions> {
+    const { body } = await this.api.request({
+      path: '/v1/payments/xborder',
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'API-Key': this.apiKey,
+      },
+      body: JSON.stringify(bodyParams),
+      throwOnError: true,
+    })
+
+    return body.json();
+  }
+
+  /**
+   * @see https://developer.abnamro.com/api-products/payment-initiation-psd2/reference-documentation#tag/Single-payments/operation/putXborderPayment
+   */
+  public async putXborderPayment({ transactionId, accessToken }: PutSEPAPaymentOptions): Promise<PutXborderPaymentResponse> {
+    const { body } = await this.api.request({
+      path: `/v1/payments/xborder/${transactionId}`,
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'API-Key': this.apiKey,
+      },
+      throwOnError: true,
+    })
+
+    return body.json();
   }
 }
 
