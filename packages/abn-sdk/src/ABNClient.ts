@@ -75,7 +75,7 @@ class ABNClient {
   }
 
   /**
-   * @see https://developer.abnamro.com/api-products/payment-initiation-psd2/reference-documentation#section/Tutorials/Single-payments-tutorial
+   * @see https://developer.abnamro.com/api-products/payment-initiation-psd2/reference-documentation#tag/Single-payments/operation/postSEPAPayment
    */
   public async postSEPAPayment({ accessToken, ...bodyParams }: ABNClientPostSEPAPaymentOptions): Promise<ABNClientPostSEPAPaymentResponse> {
     const { body } = await this.api.request({
