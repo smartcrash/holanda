@@ -65,3 +65,15 @@ export type ABNClientGetConsentInfoResponse = {
   consentStatus: 'INITIAL' | 'FULLY_SIGNED' | 'PARTIALLY_SIGNED' | 'SYSTEM_CANCELED' | 'USER_CANCELED'
   consentExpiresIn: string
 }
+
+export type PutSEPAPaymentOptions = {
+  transactionId: string
+  accessToken: string
+}
+
+export type PutSEPAPaymentResponse = {
+  transactionId: string
+  accountHolderName: string
+  accountNumber: string
+  status: "STORED" | "AUTHORIZED" | "INPROGRESS" | "SCHEDULED" | "EXECUTED" | "REJECTED" | "UNKNOWN" | "CANCEL"
+}
