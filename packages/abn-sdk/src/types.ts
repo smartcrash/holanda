@@ -52,3 +52,16 @@ export type ABNClientPostSEPAPaymentResponse = {
   status: "STORED" | "AUTHORIZED" | "INPROGRESS" | "SCHEDULED" | "EXECUTED" | "REJECTED" | "UNKNOWN" | "CANCEL"
   accountNumber?: string
 }
+
+export type ABNClientGetConsentInfoOptions = {
+  accessToken: string
+}
+
+export type ABNClientGetConsentInfoResponse = {
+  iban: string
+  transactionId: string
+  valid: number
+  scopes: string
+  consentStatus: 'INITIAL' | 'FULLY_SIGNED' | 'PARTIALLY_SIGNED' | 'SYSTEM_CANCELED' | 'USER_CANCELED'
+  consentExpiresIn: string
+}

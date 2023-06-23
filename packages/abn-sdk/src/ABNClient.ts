@@ -1,6 +1,6 @@
 import querystring from 'node:querystring';
 import { Client, errors as Errors } from "undici";
-import { ABNClientOptions, ABNClientPostSEPAPaymentOptions, ABNClientPostSEPAPaymentResponse, ABNClientRequestAccessTokenOptions, ABNClientRequestAccessTokenResponse, ABNClientRequestAuthTokenOptions, ABNClientRequestAuthTokenResponse } from './types';
+import { ABNClientGetConsentInfoOptions, ABNClientGetConsentInfoResponse, ABNClientOptions, ABNClientPostSEPAPaymentOptions, ABNClientPostSEPAPaymentResponse, ABNClientRequestAccessTokenOptions, ABNClientRequestAccessTokenResponse, ABNClientRequestAuthTokenOptions, ABNClientRequestAuthTokenResponse } from './types';
 
 class ABNClient {
   private readonly clientId: string
@@ -88,6 +88,24 @@ class ABNClient {
         'API-Key': this.apiKey,
       },
       body: JSON.stringify(bodyParams),
+      throwOnError: true,
+    })
+
+    return body.json();
+  }
+
+  /**
+   * @see https://developer.abnamro.com/api-products/account-information-psd2/reference-documentation#tag/Consent-Information/operation/getConsentInfo
+   */
+  public async getConsentInfo({ accessToken }: ABNClientGetConsentInfoOptions): Promise<ABNClientGetConsentInfoResponse> {
+    const { body } = await this.api.request({
+      path: '/v1/consentinfo',
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'API-Key': this.apiKey,
+      },
       throwOnError: true,
     })
 
