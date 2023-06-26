@@ -7,7 +7,7 @@ export type ABNClientOptions = {
   privateKey: string
 }
 
-export type ABNClientRequestAuthTokenOptions = {
+export type RequestAuthTokenOptions = {
   /** Scopes for which the access token is issued. */
   scope: ABNScopes[]
   /** Value must be 'code'. It indicates which grant to execute. */
@@ -19,9 +19,9 @@ export type ABNClientRequestAuthTokenOptions = {
   bank?: string
 }
 
-export type ABNClientRequestAuthTokenResponse = string
+export type RequestAuthTokenResponse = string
 
-export type ABNClientRequestAccessTokenOptions = {
+export type RequestAccessTokenOptions = {
   code?: string,
   grantType: string,
   redirectUri?: string,
@@ -29,14 +29,14 @@ export type ABNClientRequestAccessTokenOptions = {
   scope?: ABNScopes[]
 }
 
-export type ABNClientRequestAccessTokenResponse = {
+export type RequestAccessTokenResponse = {
   access_token: string
   refresh_token?: string
   token_type: string
   expires_in: number
 }
 
-export type ABNClientPostSEPAPaymentOptions = {
+export type PostSEPAPaymentOptions = {
   accessToken: string
   initiatingpartyAccountNumber?: string
   counterpartyAccountNumber: string
@@ -47,17 +47,17 @@ export type ABNClientPostSEPAPaymentOptions = {
   remittanceInfo?: string
 }
 
-export type ABNClientPostSEPAPaymentResponse = {
+export type PostSEPAPaymentResponse = {
   transactionId: string
   status: "STORED" | "AUTHORIZED" | "INPROGRESS" | "SCHEDULED" | "EXECUTED" | "REJECTED" | "UNKNOWN" | "CANCEL"
   accountNumber?: string
 }
 
-export type ABNClientGetConsentInfoOptions = {
+export type GetConsentInfoOptions = {
   accessToken: string
 }
 
-export type ABNClientGetConsentInfoResponse = {
+export type GetConsentInfoResponse = {
   iban: string
   transactionId?: string
   valid: number

@@ -1,6 +1,6 @@
 import querystring from 'node:querystring';
 import { Client, errors as Errors } from "undici";
-import { ABNClientGetConsentInfoOptions, ABNClientGetConsentInfoResponse, ABNClientOptions, ABNClientPostSEPAPaymentOptions, ABNClientPostSEPAPaymentResponse, ABNClientRequestAccessTokenOptions, ABNClientRequestAccessTokenResponse, ABNClientRequestAuthTokenOptions, ABNClientRequestAuthTokenResponse, DeleteSEPAPaymentOptions, DeleteSEPAPaymentResponse, GetBalancesOptions, GetBalancesResponse, GetDetailsOptions, GetDetailsResponse, GetFundsOptions, GetFundsResponse, GetSEPAPaymentOptions, GetSEPAPaymentResponse, GetTransactionsOptions, GetTransactionsResponse, PostXborderPaymentOptions, PostXborderPaymentResponse, PutSEPAPaymentOptions, PutSEPAPaymentResponse, PutXborderPaymentResponse } from './types';
+import { ABNClientOptions, DeleteSEPAPaymentOptions, DeleteSEPAPaymentResponse, GetBalancesOptions, GetBalancesResponse, GetConsentInfoOptions, GetConsentInfoResponse, GetDetailsOptions, GetDetailsResponse, GetFundsOptions, GetFundsResponse, GetSEPAPaymentOptions, GetSEPAPaymentResponse, GetTransactionsOptions, GetTransactionsResponse, PostSEPAPaymentOptions, PostSEPAPaymentResponse, PostXborderPaymentOptions, PostXborderPaymentResponse, PutSEPAPaymentOptions, PutSEPAPaymentResponse, PutXborderPaymentResponse, RequestAccessTokenOptions, RequestAccessTokenResponse, RequestAuthTokenOptions, RequestAuthTokenResponse } from './types';
 
 class ABNClient {
   private readonly clientId: string
@@ -28,7 +28,7 @@ class ABNClient {
   /**
    * @see https://developer.abnamro.com/api-products/authorization-code#tag/Access-and-refresh-token/operation/requestAccessToken
    */
-  public async requestAccessToken({ grantType, code, redirectUri, refreshToken, scope }: ABNClientRequestAccessTokenOptions): Promise<ABNClientRequestAccessTokenResponse> {
+  public async requestAccessToken({ grantType, code, redirectUri, refreshToken, scope }: RequestAccessTokenOptions): Promise<RequestAccessTokenResponse> {
     const queryParams: Record<string, string | undefined> = {
       client_id: this.clientId,
       grant_type: grantType,
@@ -52,7 +52,7 @@ class ABNClient {
   /**
    * @see https://developer.abnamro.com/api-products/authorization-code#tag/Authorization-code/operation/requestAuthCode
    */
-  public async requestAuthCode({ scope, responseType, flow, redirectUri, state, transactionId, bank }: ABNClientRequestAuthTokenOptions): Promise<ABNClientRequestAuthTokenResponse> {
+  public async requestAuthCode({ scope, responseType, flow, redirectUri, state, transactionId, bank }: RequestAuthTokenOptions): Promise<RequestAuthTokenResponse> {
     const queryParams: Record<string, string | undefined> = {
       client_id: this.clientId,
       response_type: responseType,
@@ -77,7 +77,7 @@ class ABNClient {
   /**
    * @see https://developer.abnamro.com/api-products/payment-initiation-psd2/reference-documentation#tag/Single-payments/operation/postSEPAPayment
    */
-  public async postSEPAPayment({ accessToken, ...bodyParams }: ABNClientPostSEPAPaymentOptions): Promise<ABNClientPostSEPAPaymentResponse> {
+  public async postSEPAPayment({ accessToken, ...bodyParams }: PostSEPAPaymentOptions): Promise<PostSEPAPaymentResponse> {
     const { body } = await this.api.request({
       path: '/v1/payments',
       method: 'POST',
@@ -97,7 +97,7 @@ class ABNClient {
   /**
    * @see https://developer.abnamro.com/api-products/account-information-psd2/reference-documentation#tag/Consent-Information/operation/getConsentInfo
    */
-  public async getConsentInfo({ accessToken }: ABNClientGetConsentInfoOptions): Promise<ABNClientGetConsentInfoResponse> {
+  public async getConsentInfo({ accessToken }: GetConsentInfoOptions): Promise<GetConsentInfoResponse> {
     const { body } = await this.api.request({
       path: '/v1/consentinfo',
       method: 'GET',
