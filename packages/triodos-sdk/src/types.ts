@@ -1,4 +1,11 @@
-export type TriodosClientGetInitialAccessTokenResponse = {
+export type TridosClientOptions = {
+  keyId: string
+  tenant: string
+  signingCertificate: string
+  signingKey: string
+}
+
+export type GetInitialAccessTokenResponse = {
   scope: string
   access_token: string
   expires_in: number
@@ -8,20 +15,13 @@ export type TriodosClientGetInitialAccessTokenResponse = {
   }
 }
 
-export type TriodosClientTridosClientOptions = {
-  keyId: string
-  tenant: string
-  signingCertificate: string
-  signingKey: string
-}
-
-export type TriodosClientRegisterClientOptions = {
+export type RegisterClientOptions = {
   sectorIdentifierUri?: string
   redirectUris: string[]
   accessToken: string
 }
 
-export type TriodosClientRegisterClientResponse = {
+export type RegisterClientResponse = {
   grant_types: string[]
   application_type: string
   client_secret_expires_at: number
@@ -35,7 +35,7 @@ export type TriodosClientRegisterClientResponse = {
   id_token_signed_response_alg: string
 }
 
-export type TriodosClientInitiateSepaPaymentResponse = {
+export type InitiateSepaPaymentResponse = {
   transactionStatus: 'RCVD' | 'PDNG' | 'ACCP' | 'ACTC' | 'ACWC' | 'ACWP' | 'ACSP' | 'ACSC' | 'RJCT' | 'CANC' | 'PATC' | 'ACFC'
   paymentId: string
   authorisationId: string
@@ -50,7 +50,7 @@ export type TriodosClientInitiateSepaPaymentResponse = {
   }
 }
 
-export type TriodosClientInitiateSepaPaymentOptions = {
+export type InitiateSepaPaymentOptions = {
   ipAddr: string
   redirectUri: string
   requestBody: {
@@ -65,11 +65,11 @@ export type TriodosClientInitiateSepaPaymentOptions = {
   }
 }
 
-export type TriodosClientGetSepaPaymentStatusOptions = {
+export type GetSepaPaymentStatusOptions = {
   resourceId: string
 }
 
-export type TriodosClientGetSepaPaymentStatusResponse = {
+export type GetSepaPaymentStatusResponse = {
   transactionStatus: 'RCVD' | 'PDNG' | 'ACCP' | 'ACTC' | 'ACWC' | 'ACWP' | 'ACSP' | 'ACSC' | 'RJCT' | 'CANC' | 'PATC' | 'ACFC'
   /**
    * This data element is contained, if a funds check has been performed and
@@ -78,11 +78,11 @@ export type TriodosClientGetSepaPaymentStatusResponse = {
   fundsAvailable?: boolean
 }
 
-export type TriodosClientGetSepaPaymentDetailsOptions = {
+export type GetSepaPaymentDetailsOptions = {
   resourceId: string
 }
 
-export type TriodosClientGetSepaPaymentDetailsResponse = {
+export type GetSepaPaymentDetailsResponse = {
   transactionStatus: 'RCVD' | 'PDNG' | 'ACCP' | 'ACTC' | 'ACWC' | 'ACWP' | 'ACSP' | 'ACSC' | 'RJCT' | 'CANC' | 'PATC' | 'ACFC'
   paymentId: string
   debtorAccount: { iban: string },
@@ -92,7 +92,7 @@ export type TriodosClientGetSepaPaymentDetailsResponse = {
   }
 }
 
-export type TriodosClientInitiateCrossBorderPaymentOptions = {
+export type InitiateCrossBorderPaymentOptions = {
   ipAddr: string
   redirectUri: string
   requestBody: {
@@ -121,7 +121,7 @@ export type TriodosClientInitiateCrossBorderPaymentOptions = {
   }
 }
 
-export type TriodosClientInitiateCrossBorderPaymentResponse = {
+export type InitiateCrossBorderPaymentResponse = {
   transactionStatus: 'RCVD' | 'PDNG' | 'ACCP' | 'ACTC' | 'ACWC' | 'ACWP' | 'ACSP' | 'ACSC' | 'RJCT' | 'CANC' | 'PATC' | 'ACFC'
   paymentId: string
   authorisationId: string
@@ -136,7 +136,7 @@ export type TriodosClientInitiateCrossBorderPaymentResponse = {
   }
 }
 
-export type TriodosClientGetConfigutationResponse = {
+export type GetConfigutationResponse = {
   authorization_endpoint: string
   claim_types_supported: string[]
   claims_parameter_supported: boolean
@@ -166,7 +166,7 @@ export type TriodosClientGetConfigutationResponse = {
   userinfo_signing_alg_values_supported: string[]
 }
 
-export type TriodosClientGetAuthorizationOptions = {
+export type GetAuthorizationOptions = {
   /** Always set to "code" */
   response_type?: 'code'
   client_id: string
@@ -183,9 +183,9 @@ export type TriodosClientGetAuthorizationOptions = {
   id_token_hint?: string
 }
 
-export type TriodosClientGetAuthorizationResponse = string
+export type GetAuthorizationResponse = string
 
-export type TriodosClientRegisterConsentOptions = {
+export type RegisterConsentOptions = {
   /** The forwarded IP Address header field consists of the corresponding HTTP request IP Address field between PSU and TPP */
   ipAddr: string
   /** Where the transaction flow shall be redirected to after a redirect */
@@ -237,7 +237,7 @@ export type TriodosClientRegisterConsentOptions = {
   }
 }
 
-export type TriodosClientRegisterConsentResposne = {
+export type RegisterConsentResposne = {
   consentStatus: 'received' | 'valid' | 'rejected' | 'expired' | 'terminatedByTpp' | 'revokedByPsu'
   consentId: string
   authorisationId: string
@@ -278,7 +278,7 @@ export type TriodosClientRegisterConsentResposne = {
   }
 }
 
-export type TriodosClientGetTokenOptions = {
+export type GetTokenOptions = {
   accessToken?: string
   clientId?: string
   clientSecret?: string
@@ -291,7 +291,7 @@ export type TriodosClientGetTokenOptions = {
   }
 }
 
-export type TriodosClientGetTokenResponse = {
+export type GetTokenResponse = {
   access_token: string
   scope: string
   id_token: string
@@ -299,18 +299,18 @@ export type TriodosClientGetTokenResponse = {
   expires_in: number
 }
 
-export type TriodosClientGetSepaPaymentAuthorisationStatusOptions = {
+export type GetSepaPaymentAuthorisationStatusOptions = {
   resourceId: string
   authorisationId: string
 }
 
-export type TriodosClientSubmitSepaPaymentAuthorisationStatusOptions = {
+export type SubmitSepaPaymentAuthorisationStatusOptions = {
   accessToken: string
   resourceId: string
   authorisationId: string
 }
 
-export type TriodosClientSubmitSepaPaymentAuthorisationStatusResponse = {
+export type SubmitSepaPaymentAuthorisationStatusResponse = {
   scaStatus: string
   authorisationId: string
   _links: {
@@ -319,26 +319,26 @@ export type TriodosClientSubmitSepaPaymentAuthorisationStatusResponse = {
   }
 }
 
-export type TriodosClientGetSepaPaymentAuthorisationStatusResponse = {
+export type GetSepaPaymentAuthorisationStatusResponse = {
   scaStatus: 'received' | 'psuIdentified' | 'psuAuthenticated' | 'scaMethodSelected' | 'started' | 'unconfirmed' | 'finalised' | 'failed' | 'exempted'
 }
 
-export type TriodosClientGetAccountInformationConsentStatusOptions = {
+export type GetAccountInformationConsentStatusOptions = {
   resourceId: string
 }
 
-export type TriodosClientGetAccountInformationConsentStatusResponse = {
+export type GetAccountInformationConsentStatusResponse = {
   consentStatus: 'received' | 'valid'
 }
 
 
-export type TriodosClientUpdateConsentAuthorisationWithAccessTokenOptions = {
+export type UpdateConsentAuthorisationWithAccessTokenOptions = {
   accessToken: string
   resourceId: string
   authorisationId: string
 }
 
-export type TriodosClientUpdateConsentAuthorisationWithAccessTokenResponse = {
+export type UpdateConsentAuthorisationWithAccessTokenResponse = {
   scaStatus: 'received' | 'psuIdentified' | 'psuAuthenticated' | 'scaMethodSelected' | 'started' | 'unconfirmed' | 'finalised' | 'failed' | 'exempted'
   authorisationId: string
   _links: {
@@ -347,7 +347,7 @@ export type TriodosClientUpdateConsentAuthorisationWithAccessTokenResponse = {
   }
 }
 
-export type TriodosClientGetAccountsOptions = {
+export type GetAccountsOptions = {
   accessToken: string
   consentId: string
   /** Not supported, should be unset */
@@ -355,7 +355,7 @@ export type TriodosClientGetAccountsOptions = {
   ipAddr?: string
 }
 
-export type TriodosClientGetAccountsResponse = {
+export type GetAccountsResponse = {
   accounts: {
     iban: string
     currency: string
@@ -371,14 +371,14 @@ export type TriodosClientGetAccountsResponse = {
   }[],
 }
 
-export type TriodosClientGetAccountBalancesOptions = {
+export type GetAccountBalancesOptions = {
   accessToken: string
   accountId: string
   consentId: string
   ipAddr?: string
 }
 
-export type TriodosClientGetAccountBalancesResponse = {
+export type GetAccountBalancesResponse = {
   account: {
     iban: string
   }
@@ -393,7 +393,7 @@ export type TriodosClientGetAccountBalancesResponse = {
   }[]
 }
 
-export type TriodosClientGetAccountTransactionsOptions = {
+export type GetAccountTransactionsOptions = {
   consentId: string
   accessToken: string
   ipAddr?: string
@@ -433,7 +433,7 @@ type Transaction = {
   endToEndIdentification: string
 }
 
-export type TriodosClientGetAccountTransactionsResponse = {
+export type GetAccountTransactionsResponse = {
   account: {
     iban: string
   }
@@ -448,8 +448,8 @@ export type TriodosClientGetAccountTransactionsResponse = {
   }
 }
 
-export type TriodosClientDeleteAccountInformationServiceConsentOptions = {
+export type DeleteAccountInformationServiceConsentOptions = {
   resourceId: string
 }
 
-export type TriodosClientDeleteAccountInformationServiceConsentResponse = boolean
+export type DeleteAccountInformationServiceConsentResponse = boolean

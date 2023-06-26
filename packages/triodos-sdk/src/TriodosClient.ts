@@ -3,7 +3,7 @@ import { BinaryLike, createHash, createSign } from 'node:crypto';
 import querystring from 'node:querystring';
 import { errors as Errors, request } from 'undici';
 import { v4 as uuidv4 } from 'uuid';
-import { TriodosClientDeleteAccountInformationServiceConsentOptions, TriodosClientDeleteAccountInformationServiceConsentResponse, TriodosClientGetAccountBalancesOptions, TriodosClientGetAccountBalancesResponse, TriodosClientGetAccountInformationConsentStatusOptions, TriodosClientGetAccountInformationConsentStatusResponse, TriodosClientGetAccountTransactionsOptions, TriodosClientGetAccountTransactionsResponse, TriodosClientGetAccountsOptions, TriodosClientGetAccountsResponse, TriodosClientGetAuthorizationOptions, TriodosClientGetAuthorizationResponse, TriodosClientGetConfigutationResponse, TriodosClientGetInitialAccessTokenResponse, TriodosClientGetSepaPaymentAuthorisationStatusOptions, TriodosClientGetSepaPaymentAuthorisationStatusResponse, TriodosClientGetSepaPaymentDetailsOptions, TriodosClientGetSepaPaymentDetailsResponse, TriodosClientGetSepaPaymentStatusOptions, TriodosClientGetSepaPaymentStatusResponse, TriodosClientGetTokenOptions, TriodosClientGetTokenResponse, TriodosClientInitiateCrossBorderPaymentOptions, TriodosClientInitiateCrossBorderPaymentResponse, TriodosClientInitiateSepaPaymentOptions, TriodosClientInitiateSepaPaymentResponse, TriodosClientRegisterClientOptions, TriodosClientRegisterClientResponse, TriodosClientRegisterConsentOptions, TriodosClientRegisterConsentResposne, TriodosClientSubmitSepaPaymentAuthorisationStatusOptions, TriodosClientSubmitSepaPaymentAuthorisationStatusResponse, TriodosClientTridosClientOptions, TriodosClientUpdateConsentAuthorisationWithAccessTokenOptions, TriodosClientUpdateConsentAuthorisationWithAccessTokenResponse } from './types';
+import { DeleteAccountInformationServiceConsentOptions, DeleteAccountInformationServiceConsentResponse, GetAccountBalancesOptions, GetAccountBalancesResponse, GetAccountInformationConsentStatusOptions, GetAccountInformationConsentStatusResponse, GetAccountTransactionsOptions, GetAccountTransactionsResponse, GetAccountsOptions, GetAccountsResponse, GetAuthorizationOptions, GetAuthorizationResponse, GetConfigutationResponse, GetInitialAccessTokenResponse, GetSepaPaymentAuthorisationStatusOptions, GetSepaPaymentAuthorisationStatusResponse, GetSepaPaymentDetailsOptions, GetSepaPaymentDetailsResponse, GetSepaPaymentStatusOptions, GetSepaPaymentStatusResponse, GetTokenOptions, GetTokenResponse, InitiateCrossBorderPaymentOptions, InitiateCrossBorderPaymentResponse, InitiateSepaPaymentOptions, InitiateSepaPaymentResponse, RegisterClientOptions, RegisterClientResponse, RegisterConsentOptions, RegisterConsentResposne, SubmitSepaPaymentAuthorisationStatusOptions, SubmitSepaPaymentAuthorisationStatusResponse, TridosClientOptions, UpdateConsentAuthorisationWithAccessTokenOptions, UpdateConsentAuthorisationWithAccessTokenResponse } from './types';
 
 class TriodosClient {
   private readonly baseUrl = 'https://xs2a-sandbox.triodos.com/'
@@ -12,7 +12,7 @@ class TriodosClient {
   private readonly keyId: string
   private readonly signingKey: string
 
-  constructor({ keyId, tenant, signingCertificate, signingKey }: TriodosClientTridosClientOptions) {
+  constructor({ keyId, tenant, signingCertificate, signingKey }: TridosClientOptions) {
     this.keyId = keyId
     this.signingKey = signingKey
     this.tenant = tenant
@@ -30,7 +30,7 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/initialaccesstoken
    */
-  public async getInitialAccessToken(): Promise<TriodosClientGetInitialAccessTokenResponse> {
+  public async getInitialAccessToken(): Promise<GetInitialAccessTokenResponse> {
     const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/onboarding/v1`
     const { body } = await this.signedRequest(endpoint)
     const data = await body.json()
@@ -41,7 +41,7 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/authorizepost_1
    */
-  public async registerClient({ accessToken, redirectUris, sectorIdentifierUri }: TriodosClientRegisterClientOptions): Promise<TriodosClientRegisterClientResponse> {
+  public async registerClient({ accessToken, redirectUris, sectorIdentifierUri }: RegisterClientOptions): Promise<RegisterClientResponse> {
     const options: Parameters<typeof this.signedRequest>[1] = {}
     options.method = 'POST'
     options.headers = {}
@@ -58,7 +58,7 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/configuration
    */
-  public async getConfiguration(): Promise<TriodosClientGetConfigutationResponse> {
+  public async getConfiguration(): Promise<GetConfigutationResponse> {
     const endpoint = `${this.baseUrl}auth/${this.tenant}/.well-known/openid-configuration`
     const { body } = await this.signedRequest(endpoint)
     const data = await body.json()
@@ -68,7 +68,7 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/authorizeget
    */
-  public async getAuthorization(options: TriodosClientGetAuthorizationOptions): Promise<TriodosClientGetAuthorizationResponse> {
+  public async getAuthorization(options: GetAuthorizationOptions): Promise<GetAuthorizationResponse> {
     options.response_type = 'code'
     options.code_challenge_method = 'S256'
 
@@ -84,7 +84,7 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/registerconsentrequest
    */
-  public async registerConsent({ ipAddr, redirectUri, bodyParams }: TriodosClientRegisterConsentOptions): Promise<TriodosClientRegisterConsentResposne> {
+  public async registerConsent({ ipAddr, redirectUri, bodyParams }: RegisterConsentOptions): Promise<RegisterConsentResposne> {
     const options: Parameters<typeof this.signedRequest>[1] = {}
     options.method = 'POST'
     options.headers = {}
@@ -101,7 +101,7 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/token
    */
-  public async getToken({ accessToken, clientId, clientSecret, bodyParams }: TriodosClientGetTokenOptions): Promise<TriodosClientGetTokenResponse> {
+  public async getToken({ accessToken, clientId, clientSecret, bodyParams }: GetTokenOptions): Promise<GetTokenResponse> {
     const options: Parameters<typeof this.signedRequest>[1] = {}
     options.method = 'POST'
     options.headers = {}
@@ -146,7 +146,7 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/getaccounts
    */
-  public async getAccounts({ accessToken, consentId, ipAddr, withBalance: _withBalance }: TriodosClientGetAccountsOptions): Promise<TriodosClientGetAccountsResponse> {
+  public async getAccounts({ accessToken, consentId, ipAddr, withBalance: _withBalance }: GetAccountsOptions): Promise<GetAccountsResponse> {
     const options: Parameters<typeof this.signedRequest>[1] = {}
     options.headers = {}
     if (ipAddr) options.headers['PSU-IP-Address'] = ipAddr
@@ -162,7 +162,7 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/getbalances
    */
-  public async getAccountBalances({ accessToken, accountId, consentId, ipAddr }: TriodosClientGetAccountBalancesOptions): Promise<TriodosClientGetAccountBalancesResponse> {
+  public async getAccountBalances({ accessToken, accountId, consentId, ipAddr }: GetAccountBalancesOptions): Promise<GetAccountBalancesResponse> {
     const options: Parameters<typeof this.signedRequest>[1] = {}
     options.headers = {}
     if (ipAddr) options.headers['PSU-IP-Address'] = ipAddr
@@ -178,7 +178,7 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/gettransactions
    */
-  public async getAccountTransactions({ accessToken, consentId, ipAddr, accountId, bookingStatus, dateFrom, dateTo, withBalance: _withBalance, deltaList: _deltaList, entryReferenceFrom: _entryReferenceFrom }: TriodosClientGetAccountTransactionsOptions): Promise<TriodosClientGetAccountTransactionsResponse> {
+  public async getAccountTransactions({ accessToken, consentId, ipAddr, accountId, bookingStatus, dateFrom, dateTo, withBalance: _withBalance, deltaList: _deltaList, entryReferenceFrom: _entryReferenceFrom }: GetAccountTransactionsOptions): Promise<GetAccountTransactionsResponse> {
     const options: Parameters<typeof this.signedRequest>[1] = {}
     options.headers = {}
     if (ipAddr) options.headers['PSU-IP-Address'] = ipAddr
@@ -234,7 +234,7 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/deleteaisconsent
    */
-  public async deleteAccountInformationServiceConsent({ resourceId }: TriodosClientDeleteAccountInformationServiceConsentOptions): Promise<TriodosClientDeleteAccountInformationServiceConsentResponse> {
+  public async deleteAccountInformationServiceConsent({ resourceId }: DeleteAccountInformationServiceConsentOptions): Promise<DeleteAccountInformationServiceConsentResponse> {
     const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/consents/${resourceId}`
     const { statusCode } = await this.signedRequest(endpoint, { method: 'DELETE' })
 
@@ -314,7 +314,7 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/initiatesepapayment
    */
-  public async initiateSepaPayment({ ipAddr, redirectUri, requestBody }: TriodosClientInitiateSepaPaymentOptions): Promise<TriodosClientInitiateSepaPaymentResponse> {
+  public async initiateSepaPayment({ ipAddr, redirectUri, requestBody }: InitiateSepaPaymentOptions): Promise<InitiateSepaPaymentResponse> {
     const options: Parameters<typeof this.signedRequest>[1] = {}
     options.method = 'POST'
     options.headers = {}
@@ -331,7 +331,7 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/getauthorisation
    */
-  public async getSepaPaymentAuthorisationStatus({ resourceId, authorisationId }: TriodosClientGetSepaPaymentAuthorisationStatusOptions): Promise<TriodosClientGetSepaPaymentAuthorisationStatusResponse> {
+  public async getSepaPaymentAuthorisationStatus({ resourceId, authorisationId }: GetSepaPaymentAuthorisationStatusOptions): Promise<GetSepaPaymentAuthorisationStatusResponse> {
     const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/payments/sepa-credit-transfers/${resourceId}/authorisations/${authorisationId}`
     const response = await this.signedRequest(endpoint)
     const data = await response.body.json()
@@ -341,7 +341,7 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/getaisconsentstatus
    */
-  public async getAccountInformationConsentStatus({ resourceId }: TriodosClientGetAccountInformationConsentStatusOptions): Promise<TriodosClientGetAccountInformationConsentStatusResponse> {
+  public async getAccountInformationConsentStatus({ resourceId }: GetAccountInformationConsentStatusOptions): Promise<GetAccountInformationConsentStatusResponse> {
     const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/consents/${resourceId}/status`
     const response = await this.signedRequest(endpoint)
     const data = await response.body.json()
@@ -351,7 +351,7 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/submitaisauthorisation
    */
-  public async updateConsentAuthorisationWithAccessToken({ accessToken, resourceId, authorisationId }: TriodosClientUpdateConsentAuthorisationWithAccessTokenOptions): Promise<TriodosClientUpdateConsentAuthorisationWithAccessTokenResponse> {
+  public async updateConsentAuthorisationWithAccessToken({ accessToken, resourceId, authorisationId }: UpdateConsentAuthorisationWithAccessTokenOptions): Promise<UpdateConsentAuthorisationWithAccessTokenResponse> {
     const options: Parameters<typeof this.signedRequest>[1] = {}
     options.method = 'PUT'
     options.headers = { Authorization: `Bearer ${accessToken}` }
@@ -365,7 +365,7 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/submitauthorisation
    */
-  public async submitSepaPaymentAuthorisation({ accessToken, resourceId, authorisationId }: TriodosClientSubmitSepaPaymentAuthorisationStatusOptions): Promise<TriodosClientSubmitSepaPaymentAuthorisationStatusResponse> {
+  public async submitSepaPaymentAuthorisation({ accessToken, resourceId, authorisationId }: SubmitSepaPaymentAuthorisationStatusOptions): Promise<SubmitSepaPaymentAuthorisationStatusResponse> {
     const options: Parameters<typeof this.signedRequest>[1] = {}
     options.method = 'PUT'
     options.headers = { Authorization: `Bearer ${accessToken}` }
@@ -379,14 +379,14 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/getstatus_3
    */
-  public async getSepaPaymentStatus({ resourceId }: TriodosClientGetSepaPaymentStatusOptions): Promise<TriodosClientGetSepaPaymentStatusResponse> {
+  public async getSepaPaymentStatus({ resourceId }: GetSepaPaymentStatusOptions): Promise<GetSepaPaymentStatusResponse> {
     const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/payments/sepa-credit-transfers/${resourceId}/status`
     const response = await this.signedRequest(endpoint)
     const data = await response.body.json()
     return data
   }
 
-  public async getSepaPaymentDetails({ resourceId }: TriodosClientGetSepaPaymentDetailsOptions): Promise<TriodosClientGetSepaPaymentDetailsResponse> {
+  public async getSepaPaymentDetails({ resourceId }: GetSepaPaymentDetailsOptions): Promise<GetSepaPaymentDetailsResponse> {
     const endpoint = `${this.baseUrl}xs2a-bg/${this.tenant}/v1/payments/sepa-credit-transfers/${resourceId}`
     const response = await this.signedRequest(endpoint)
     const data = await response.body.json()
@@ -396,7 +396,7 @@ class TriodosClient {
   /**
    * @see https://developer.triodos.com/reference/initiatecrossborderpayment
    */
-  public async initiateCrossBorderPayment({ ipAddr, redirectUri, requestBody }: TriodosClientInitiateCrossBorderPaymentOptions): Promise<TriodosClientInitiateCrossBorderPaymentResponse> {
+  public async initiateCrossBorderPayment({ ipAddr, redirectUri, requestBody }: InitiateCrossBorderPaymentOptions): Promise<InitiateCrossBorderPaymentResponse> {
     const options: Parameters<typeof this.signedRequest>[1] = {}
     options.method = 'POST'
     options.headers = {}
