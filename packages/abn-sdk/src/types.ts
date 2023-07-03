@@ -306,3 +306,69 @@ export type PutXborderPaymentResponse = {
   status: "STORED" | "AUTHORIZED" | "INPROGRESS" | "SCHEDULED" | "EXECUTED" | "REJECTED" | "UNKNOWN" | "CANCEL"
   accountHolderName?: string
 }
+
+export type PostStandingOrderPaymentOptions = {
+  /** Client credentials 'access-token' to be passed as a bearer token. */
+  accessToken: string
+
+  /**
+   * Start date of the standing order in the format: yyyy-mm-dd. Must be a future date up to a maximum of 30 days.
+   */
+  startDate: Date | string
+
+  /** Optional end date of the standing order in the format: yyyy-mm-dd. If this value is blank, the end date is indefinite. */
+  endDate?: Date | string
+
+  /**
+   * Defines the behavior when a recurring payment date falls on a weekend or
+   * bank holiday. This value is case sensitive. It is accepted for input, but not used.
+   */
+  executionRule?: 'FOLLOWING' | 'PRECEEDING'
+
+  /** Frequency with which the standing order is executed. The 'EventFrequencyCode' of ISO 20022 is supported. This value is case sensitive. */
+  frequency: "DAILY" | "WEEKLY" | "EVERYTWOWEEKS" | "MONTHLY" | "EVERYTWOMONTHS" | "QUARTERLY" | "SEMIANNUAL" | "ANNUAL"
+
+  /** Day of execution as a string. This string always consists of two characters. The field is accepted for input, but not used. */
+  dayOfExecution?: "01" | "02" | "03" | "04" | "05" | "06" | "07" | "08" | "09" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30" | "31"
+
+  payment: {
+    /** Account number, in IBAN format, of the ordering part initiating the transaction. If the account cannot be authorized, the account holder can select a different account. */
+    initiatingpartyAccountNumber: string
+
+    /** Account number of the counterparty in IBAN format. */
+    counterpartyAccountNumber: string
+
+    /** Name of the counterparty. */
+    counterpartyName: string
+
+    /**
+     * The amount of the transaction. This value is always positive.
+     * The maximum amount is equal to that set for the online banking channel Internet Banking or Access Online.
+     */
+    amount: number
+
+    /**
+     * Currency of the transaction using ISO-4217 currency. EUR is supported Only. If omitted, EUR is assumed.
+     */
+    currency?: string
+
+    /** Information for the beneficiary about the payment. */
+    remittanceInfo?: string
+  }
+}
+
+export type PostStandingOrderPaymentResponse = {
+  /**
+   * Unique transaction ID that for authorizing the standing order by the account holder.
+   * Is also required as input for PUT payments.
+   */
+  transactionId: string
+  /**
+   * Status of the standing order.
+   * Initial status at registration is STORED. AUTHORIZED indicates consent is given,
+   * and ACTIVATED indicates the SDO is active.
+   */
+  status: "STORED" | "AUTHORIZED" | "REJECTED" | "ACTIVATED"
+  /** Initiating party account number. */
+  accountNumber?: string
+}

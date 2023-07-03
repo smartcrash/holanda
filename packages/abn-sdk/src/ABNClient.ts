@@ -1,6 +1,6 @@
 import querystring from 'node:querystring';
 import { Client, errors as Errors } from "undici";
-import { ABNClientOptions, DeleteSEPAPaymentOptions, DeleteSEPAPaymentResponse, GetBalancesOptions, GetBalancesResponse, GetConsentInfoOptions, GetConsentInfoResponse, GetDetailsOptions, GetDetailsResponse, GetFundsOptions, GetFundsResponse, GetSEPAPaymentOptions, GetSEPAPaymentResponse, GetTransactionsOptions, GetTransactionsResponse, PostSEPAPaymentOptions, PostSEPAPaymentResponse, PostXborderPaymentOptions, PostXborderPaymentResponse, PutSEPAPaymentOptions, PutSEPAPaymentResponse, PutXborderPaymentResponse, RequestAccessTokenOptions, RequestAccessTokenResponse, RequestAuthTokenOptions, RequestAuthTokenResponse } from './types';
+import { ABNClientOptions, DeleteSEPAPaymentOptions, DeleteSEPAPaymentResponse, GetBalancesOptions, GetBalancesResponse, GetConsentInfoOptions, GetConsentInfoResponse, GetDetailsOptions, GetDetailsResponse, GetFundsOptions, GetFundsResponse, GetSEPAPaymentOptions, GetSEPAPaymentResponse, GetTransactionsOptions, GetTransactionsResponse, PostSEPAPaymentOptions, PostSEPAPaymentResponse, PostStandingOrderPaymentOptions, PostStandingOrderPaymentResponse, PostXborderPaymentOptions, PostXborderPaymentResponse, PutSEPAPaymentOptions, PutSEPAPaymentResponse, PutXborderPaymentResponse, RequestAccessTokenOptions, RequestAccessTokenResponse, RequestAuthTokenOptions, RequestAuthTokenResponse } from './types';
 
 class ABNClient {
   private readonly clientId: string
@@ -279,6 +279,25 @@ class ABNClient {
         'Authorization': `Bearer ${accessToken}`,
         'API-Key': this.apiKey,
       },
+      throwOnError: true,
+    })
+
+    return body.json();
+  }
+
+  /**
+   * @see https://developer.abnamro.com/api-products/payment-initiation-psd2/reference-documentation#tag/Single-payments/operation/postStandingOrderPayment
+   */
+  public async postStandingOrderPayment({ accessToken, ...bodyParams }: PostStandingOrderPaymentOptions): Promise<PostStandingOrderPaymentResponse> {
+    const { body } = await this.api.request({
+      path: '/v1/payments/standingorder',
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'API-Key': this.apiKey,
+      },
+      body: JSON.stringify(bodyParams),
       throwOnError: true,
     })
 
