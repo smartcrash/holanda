@@ -1,16 +1,19 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import test from 'ava';
+import test from 'ava'
 import { Triodos } from '../src/Triodos'
 
 let client: Triodos
 
-test.beforeEach(() => client = new Triodos({
-  keyId: 'SN=1,CA=CN=Xs2aTpp.com, O=TriodosBank, OID.2.5.4.97=PSDYG-LJFPYJY-PD6RJYY, L=Zeist, C=NL',
-  signingCertificate: readFileSync(join(__dirname, '/example-cert.pem'), { encoding: 'utf8' }),
-  signingKey: readFileSync(join(__dirname, '/example-key.pem'), { encoding: 'utf8' }),
-  tenant: 'nl'
-}))
+test.beforeEach(
+  () =>
+    (client = new Triodos({
+      keyId: 'SN=1,CA=CN=Xs2aTpp.com, O=TriodosBank, OID.2.5.4.97=PSDYG-LJFPYJY-PD6RJYY, L=Zeist, C=NL',
+      signingCertificate: readFileSync(join(__dirname, '/example-cert.pem'), { encoding: 'utf8' }),
+      signingKey: readFileSync(join(__dirname, '/example-key.pem'), { encoding: 'utf8' }),
+      tenant: 'nl',
+    })),
+)
 
 test.serial('returns successful response', async (t) => {
   const bodyParams = {
@@ -23,7 +26,7 @@ test.serial('returns successful response', async (t) => {
     validUntil: '9999-12-31',
     frequencyPerDay: 4,
     combinedServiceIndicator: false,
-  };
+  }
 
   const response = await client.registerConsent({
     ipAddr: '0.0.0.0',
@@ -50,4 +53,4 @@ test.serial('returns successful response', async (t) => {
   t.assert(typeof response._links.self === 'string')
   t.assert(typeof response._links.status === 'string')
   t.assert(typeof response._links.confirmation === 'string')
-});
+})

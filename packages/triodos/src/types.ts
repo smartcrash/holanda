@@ -36,10 +36,22 @@ export type RegisterClientResponse = {
 }
 
 export type InitiateSepaPaymentResponse = {
-  transactionStatus: 'RCVD' | 'PDNG' | 'ACCP' | 'ACTC' | 'ACWC' | 'ACWP' | 'ACSP' | 'ACSC' | 'RJCT' | 'CANC' | 'PATC' | 'ACFC'
+  transactionStatus:
+    | 'RCVD'
+    | 'PDNG'
+    | 'ACCP'
+    | 'ACTC'
+    | 'ACWC'
+    | 'ACWP'
+    | 'ACSP'
+    | 'ACSC'
+    | 'RJCT'
+    | 'CANC'
+    | 'PATC'
+    | 'ACFC'
   paymentId: string
   authorisationId: string
-  debtorAccount: { iban: string },
+  debtorAccount: { iban: string }
   _links: {
     scaOAuth: string
     scaRedirect: string
@@ -70,7 +82,19 @@ export type GetSepaPaymentStatusOptions = {
 }
 
 export type GetSepaPaymentStatusResponse = {
-  transactionStatus: 'RCVD' | 'PDNG' | 'ACCP' | 'ACTC' | 'ACWC' | 'ACWP' | 'ACSP' | 'ACSC' | 'RJCT' | 'CANC' | 'PATC' | 'ACFC'
+  transactionStatus:
+    | 'RCVD'
+    | 'PDNG'
+    | 'ACCP'
+    | 'ACTC'
+    | 'ACWC'
+    | 'ACWP'
+    | 'ACSP'
+    | 'ACSC'
+    | 'RJCT'
+    | 'CANC'
+    | 'PATC'
+    | 'ACFC'
   /**
    * This data element is contained, if a funds check has been performed and
    * if the transactionStatus is `ACTC`, `ACWC` or `ACCP`.
@@ -83,9 +107,21 @@ export type GetSepaPaymentDetailsOptions = {
 }
 
 export type GetSepaPaymentDetailsResponse = {
-  transactionStatus: 'RCVD' | 'PDNG' | 'ACCP' | 'ACTC' | 'ACWC' | 'ACWP' | 'ACSP' | 'ACSC' | 'RJCT' | 'CANC' | 'PATC' | 'ACFC'
+  transactionStatus:
+    | 'RCVD'
+    | 'PDNG'
+    | 'ACCP'
+    | 'ACTC'
+    | 'ACWC'
+    | 'ACWP'
+    | 'ACSP'
+    | 'ACSC'
+    | 'RJCT'
+    | 'CANC'
+    | 'PATC'
+    | 'ACFC'
   paymentId: string
-  debtorAccount: { iban: string },
+  debtorAccount: { iban: string }
   _links: {
     self: string
     status: string
@@ -99,14 +135,14 @@ export type InitiateCrossBorderPaymentOptions = {
     instructedAmount: {
       currency: string
       amount: string
-    },
-    debtorAccount: { iban: string },
+    }
+    debtorAccount: { iban: string }
     creditorName: string
-    creditorAccount: { iban: string } | { foreignAccountNumber: string },
+    creditorAccount: { iban: string } | { foreignAccountNumber: string }
     /**
      * When an IBAN is not supplied for the creditor account of a Foreign Payment,
      * the creditorAgent field is mandatory.
-    */
+     */
     creditorAgent?: string
     chargeBearer: string
     creditorAddress: {
@@ -115,17 +151,29 @@ export type InitiateCrossBorderPaymentOptions = {
       townName: string
       postcode: string
       country: string
-    },
+    }
     remittanceInformationUnstructured: string
     requestedExecutionDate: string
   }
 }
 
 export type InitiateCrossBorderPaymentResponse = {
-  transactionStatus: 'RCVD' | 'PDNG' | 'ACCP' | 'ACTC' | 'ACWC' | 'ACWP' | 'ACSP' | 'ACSC' | 'RJCT' | 'CANC' | 'PATC' | 'ACFC'
+  transactionStatus:
+    | 'RCVD'
+    | 'PDNG'
+    | 'ACCP'
+    | 'ACTC'
+    | 'ACWC'
+    | 'ACWP'
+    | 'ACSP'
+    | 'ACSC'
+    | 'RJCT'
+    | 'CANC'
+    | 'PATC'
+    | 'ACFC'
   paymentId: string
   authorisationId: string
-  debtorAccount: { iban: string },
+  debtorAccount: { iban: string }
   _links: {
     scaOAuth: string
     scaRedirect: string
@@ -201,7 +249,7 @@ export type RegisterConsentOptions = {
         ukSortCode?: string
         ukAccountNumber?: string
         currency?: string
-      }[],
+      }[]
       balances: {
         /**  If an iban is provided then `ukSortCode` and `ukAccountNumber` should be left empty */
         iban?: string
@@ -211,7 +259,7 @@ export type RegisterConsentOptions = {
         ukSortCode?: string
         ukAccountNumber?: string
         currency?: string
-      }[],
+      }[]
       transactions: {
         /**  If an iban is provided then `ukSortCode` and `ukAccountNumber` should be left empty */
         iban?: string
@@ -221,7 +269,7 @@ export type RegisterConsentOptions = {
         ukSortCode?: string
         ukAccountNumber?: string
         currency?: string
-      }[],
+      }[]
     }
     /** `true`, if the consent is for recurring access to the account data. `false`, if the consent is for one access to the account data */
     recurringIndicator: boolean
@@ -248,21 +296,21 @@ export type RegisterConsentResposne = {
       ukSortCode?: string
       ukAccountNumber?: string
       currency?: string
-    }[],
+    }[]
     balances: {
       iban?: string
       foreignAccountNumber?: string
       ukSortCode?: string
       ukAccountNumber?: string
       currency?: string
-    }[],
+    }[]
     transactions: {
       iban?: string
       foreignAccountNumber?: string
       ukSortCode?: string
       ukAccountNumber?: string
       currency?: string
-    }[],
+    }[]
   }
   recurringIndicator: boolean
   validUntil: string
@@ -320,7 +368,16 @@ export type SubmitSepaPaymentAuthorisationStatusResponse = {
 }
 
 export type GetSepaPaymentAuthorisationStatusResponse = {
-  scaStatus: 'received' | 'psuIdentified' | 'psuAuthenticated' | 'scaMethodSelected' | 'started' | 'unconfirmed' | 'finalised' | 'failed' | 'exempted'
+  scaStatus:
+    | 'received'
+    | 'psuIdentified'
+    | 'psuAuthenticated'
+    | 'scaMethodSelected'
+    | 'started'
+    | 'unconfirmed'
+    | 'finalised'
+    | 'failed'
+    | 'exempted'
 }
 
 export type GetAccountInformationConsentStatusOptions = {
@@ -331,7 +388,6 @@ export type GetAccountInformationConsentStatusResponse = {
   consentStatus: 'received' | 'valid'
 }
 
-
 export type UpdateConsentAuthorisationWithAccessTokenOptions = {
   accessToken: string
   resourceId: string
@@ -339,7 +395,16 @@ export type UpdateConsentAuthorisationWithAccessTokenOptions = {
 }
 
 export type UpdateConsentAuthorisationWithAccessTokenResponse = {
-  scaStatus: 'received' | 'psuIdentified' | 'psuAuthenticated' | 'scaMethodSelected' | 'started' | 'unconfirmed' | 'finalised' | 'failed' | 'exempted'
+  scaStatus:
+    | 'received'
+    | 'psuIdentified'
+    | 'psuAuthenticated'
+    | 'scaMethodSelected'
+    | 'started'
+    | 'unconfirmed'
+    | 'finalised'
+    | 'failed'
+    | 'exempted'
   authorisationId: string
   _links: {
     scaStatus: string
@@ -368,7 +433,7 @@ export type GetAccountsResponse = {
       transactions: string
       balances: string
     }
-  }[],
+  }[]
 }
 
 export type GetAccountBalancesOptions = {

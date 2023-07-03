@@ -1,39 +1,42 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import test from 'ava';
+import test from 'ava'
 import { Triodos, Errors } from '../src/Triodos'
 
 const { ResponseStatusCodeError } = Errors
 
 let client: Triodos
 
-test.beforeEach(() => client = new Triodos({
-  keyId: 'SN=1,CA=CN=Xs2aTpp.com, O=TriodosBank, OID.2.5.4.97=PSDYG-LJFPYJY-PD6RJYY, L=Zeist, C=NL',
-  signingCertificate: readFileSync(join(__dirname, '/example-cert.pem'), { encoding: 'utf8' }),
-  signingKey: readFileSync(join(__dirname, '/example-key.pem'), { encoding: 'utf8' }),
-  tenant: 'nl'
-}))
+test.beforeEach(
+  () =>
+    (client = new Triodos({
+      keyId: 'SN=1,CA=CN=Xs2aTpp.com, O=TriodosBank, OID.2.5.4.97=PSDYG-LJFPYJY-PD6RJYY, L=Zeist, C=NL',
+      signingCertificate: readFileSync(join(__dirname, '/example-cert.pem'), { encoding: 'utf8' }),
+      signingKey: readFileSync(join(__dirname, '/example-key.pem'), { encoding: 'utf8' }),
+      tenant: 'nl',
+    })),
+)
 
 test.serial('should return successful response', async (t) => {
   const requestBody = {
     instructedAmount: {
-      currency: "EUR",
-      amount: "11"
+      currency: 'EUR',
+      amount: '11',
     },
     debtorAccount: {
-      iban: "NL86TRIO0320614433"
+      iban: 'NL86TRIO0320614433',
     },
     creditorAccount: {
-      iban: "NL49RABO4963487330"
+      iban: 'NL49RABO4963487330',
     },
-    creditorName: "Jhon Doe",
-    requestedExecutionDate: "2024-02-22",
+    creditorName: 'Jhon Doe',
+    requestedExecutionDate: '2024-02-22',
   }
 
   const response = await client.initiateSepaPayment({
     ipAddr: '0.0.0.0',
     redirectUri: 'http://example.com',
-    requestBody
+    requestBody,
   })
 
   t.assert(typeof response === 'object')
@@ -53,24 +56,28 @@ test.serial('should return successful response', async (t) => {
 test.serial('should throw error if currency is other than EUR', async (t) => {
   const requestBody = {
     instructedAmount: {
-      currency: "GBP",
-      amount: "11"
+      currency: 'GBP',
+      amount: '11',
     },
     debtorAccount: {
-      iban: "NL86TRIO0320614433"
+      iban: 'NL86TRIO0320614433',
     },
     creditorAccount: {
-      iban: "NL49RABO4963487330"
+      iban: 'NL49RABO4963487330',
     },
-    creditorName: "Jhon Doe",
-    requestedExecutionDate: "2024-02-22",
+    creditorName: 'Jhon Doe',
+    requestedExecutionDate: '2024-02-22',
   }
 
-  const error: any = await t.throwsAsync(() => client.initiateSepaPayment({
-    ipAddr: '0.0.0.0',
-    redirectUri: 'http://example.com',
-    requestBody
-  }), { instanceOf: ResponseStatusCodeError })
+  const error: any = await t.throwsAsync(
+    () =>
+      client.initiateSepaPayment({
+        ipAddr: '0.0.0.0',
+        redirectUri: 'http://example.com',
+        requestBody,
+      }),
+    { instanceOf: ResponseStatusCodeError },
+  )
 
   t.assert(typeof error === 'object')
   t.is(error.status, 400)

@@ -1,4 +1,4 @@
-import { ABNAmroScopes } from "./enums"
+import { ABNAmroScopes } from './enums'
 
 export type ABNAmroOptions = {
   apiKey: string
@@ -22,9 +22,9 @@ export type RequestAuthTokenOptions = {
 export type RequestAuthTokenResponse = string
 
 export type RequestAccessTokenOptions = {
-  code?: string,
-  grantType: string,
-  redirectUri?: string,
+  code?: string
+  grantType: string
+  redirectUri?: string
   refreshToken?: string
   scope?: ABNAmroScopes[]
 }
@@ -49,7 +49,7 @@ export type PostSEPAPaymentOptions = {
 
 export type PostSEPAPaymentResponse = {
   transactionId: string
-  status: "STORED" | "AUTHORIZED" | "INPROGRESS" | "SCHEDULED" | "EXECUTED" | "REJECTED" | "UNKNOWN" | "CANCEL"
+  status: 'STORED' | 'AUTHORIZED' | 'INPROGRESS' | 'SCHEDULED' | 'EXECUTED' | 'REJECTED' | 'UNKNOWN' | 'CANCEL'
   accountNumber?: string
 }
 
@@ -75,7 +75,7 @@ export type PutSEPAPaymentResponse = {
   transactionId: string
   accountHolderName: string
   accountNumber: string
-  status: "STORED" | "AUTHORIZED" | "INPROGRESS" | "SCHEDULED" | "EXECUTED" | "REJECTED" | "UNKNOWN" | "CANCEL"
+  status: 'STORED' | 'AUTHORIZED' | 'INPROGRESS' | 'SCHEDULED' | 'EXECUTED' | 'REJECTED' | 'UNKNOWN' | 'CANCEL'
 }
 
 export type GetSEPAPaymentOptions = {
@@ -87,7 +87,7 @@ export type GetSEPAPaymentResponse = {
   transactionId: string
   accountHolderName: string
   accountNumber: string
-  status: "STORED" | "AUTHORIZED" | "INPROGRESS" | "SCHEDULED" | "EXECUTED" | "REJECTED" | "UNKNOWN" | "CANCEL"
+  status: 'STORED' | 'AUTHORIZED' | 'INPROGRESS' | 'SCHEDULED' | 'EXECUTED' | 'REJECTED' | 'UNKNOWN' | 'CANCEL'
 }
 
 export type GetDetailsOptions = {
@@ -134,7 +134,19 @@ export type GetTransactionsOptions = {
    * filter, the full response will be returned. In this case the filter is superfluous.
    * If all transaction data is required, then this query parameter does not have to be supplied.
    */
-  includeProperties?: ("transactionId" | "mutationCode" | "descriptionLines" | "transactionTimestamp" | "bookDate" | "balanceAfterMutation" | "counterPartyAccountNumber" | "counterPartyName" | "amount" | "currency" | "status")[]
+  includeProperties?: (
+    | 'transactionId'
+    | 'mutationCode'
+    | 'descriptionLines'
+    | 'transactionTimestamp'
+    | 'bookDate'
+    | 'balanceAfterMutation'
+    | 'counterPartyAccountNumber'
+    | 'counterPartyName'
+    | 'amount'
+    | 'currency'
+    | 'status'
+  )[]
 }
 
 export type GetTransactionsResponse = {
@@ -201,7 +213,7 @@ export type PostXborderPaymentOptions = {
     /**
      * Indicates the type of bankIdentifier used; "SWIFTBIC", for a BIC; "UKSORTCODE", for a UK sortcode; or "FEDWIRE", for a US bankcode.
      */
-    bankIdentifierType: "SWIFTBIC" | "UKSORTCODE" | "FEDWIRE"
+    bankIdentifierType: 'SWIFTBIC' | 'UKSORTCODE' | 'FEDWIRE'
     /** Specifies the `BankIdentifier` for the selected `bankIdentifierType`. */
     bankIdentifier: string
     /**
@@ -270,7 +282,7 @@ export type PostXborderPaymentOptions = {
    * OUR = initiating party, SHA = both parties share the charges.
    * If not specified, SHA is assumed. Always use SHA in EEA.
    */
-  chargesBearer: "SHA" | "BEN" | "OUR"
+  chargesBearer: 'SHA' | 'BEN' | 'OUR'
 
   /**
    * Optional date on which the initiated payment is to be executed.
@@ -290,10 +302,9 @@ export type PostXborderPaymentOptions = {
 export type PostXborderPaymentResponse = {
   accountNumber?: string
   transactionId: string
-  status: "STORED" | "AUTHORIZED" | "INPROGRESS" | "SCHEDULED" | "EXECUTED" | "REJECTED" | "UNKNOWN" | "CANCEL"
+  status: 'STORED' | 'AUTHORIZED' | 'INPROGRESS' | 'SCHEDULED' | 'EXECUTED' | 'REJECTED' | 'UNKNOWN' | 'CANCEL'
   accountHolderName?: string
 }
-
 
 export type PutXborderPaymentOptions = {
   transactionId: string
@@ -303,7 +314,7 @@ export type PutXborderPaymentOptions = {
 export type PutXborderPaymentResponse = {
   accountNumber?: string
   transactionId: string
-  status: "STORED" | "AUTHORIZED" | "INPROGRESS" | "SCHEDULED" | "EXECUTED" | "REJECTED" | "UNKNOWN" | "CANCEL"
+  status: 'STORED' | 'AUTHORIZED' | 'INPROGRESS' | 'SCHEDULED' | 'EXECUTED' | 'REJECTED' | 'UNKNOWN' | 'CANCEL'
   accountHolderName?: string
 }
 
@@ -326,10 +337,41 @@ export type PostStandingOrderPaymentOptions = {
   executionRule?: 'FOLLOWING' | 'PRECEEDING'
 
   /** Frequency with which the standing order is executed. The 'EventFrequencyCode' of ISO 20022 is supported. This value is case sensitive. */
-  frequency: "DAILY" | "WEEKLY" | "EVERYTWOWEEKS" | "MONTHLY" | "EVERYTWOMONTHS" | "QUARTERLY" | "SEMIANNUAL" | "ANNUAL"
+  frequency: 'DAILY' | 'WEEKLY' | 'EVERYTWOWEEKS' | 'MONTHLY' | 'EVERYTWOMONTHS' | 'QUARTERLY' | 'SEMIANNUAL' | 'ANNUAL'
 
   /** Day of execution as a string. This string always consists of two characters. The field is accepted for input, but not used. */
-  dayOfExecution?: "01" | "02" | "03" | "04" | "05" | "06" | "07" | "08" | "09" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30" | "31"
+  dayOfExecution?:
+    | '01'
+    | '02'
+    | '03'
+    | '04'
+    | '05'
+    | '06'
+    | '07'
+    | '08'
+    | '09'
+    | '10'
+    | '11'
+    | '12'
+    | '13'
+    | '14'
+    | '15'
+    | '16'
+    | '17'
+    | '18'
+    | '19'
+    | '20'
+    | '21'
+    | '22'
+    | '23'
+    | '24'
+    | '25'
+    | '26'
+    | '27'
+    | '28'
+    | '29'
+    | '30'
+    | '31'
 
   payment: {
     /** Account number, in IBAN format, of the ordering part initiating the transaction. If the account cannot be authorized, the account holder can select a different account. */
@@ -368,7 +410,7 @@ export type PostStandingOrderPaymentResponse = {
    * Initial status at registration is STORED. AUTHORIZED indicates consent is given,
    * and ACTIVATED indicates the SDO is active.
    */
-  status: "STORED" | "AUTHORIZED" | "REJECTED" | "ACTIVATED"
+  status: 'STORED' | 'AUTHORIZED' | 'REJECTED' | 'ACTIVATED'
   /** Initiating party account number. */
   accountNumber?: string
 }
