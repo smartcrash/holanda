@@ -19,6 +19,7 @@ test.beforeEach(
 
 test.serial('returns error is code is empty', async (t) => {
   const { access_token: accessToken } = await client.getInitialAccessToken()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const error: any = await t.throwsAsync(
     () => client.getToken({ accessToken, bodyParams: { grant_type: 'authorization_code', code: '' } }),
     { instanceOf: ResponseStatusCodeError },

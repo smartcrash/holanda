@@ -69,6 +69,7 @@ test.serial('should throw error if currency is other than EUR', async (t) => {
     requestedExecutionDate: '2024-02-22',
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const error: any = await t.throwsAsync(
     () =>
       client.initiateSepaPayment({

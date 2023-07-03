@@ -42,6 +42,7 @@ test.serial('throws if Token have insuficient scopes', async (t) => {
     scope: [],
   })
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const error: any = await t.throwsAsync(
     () =>
       client.postSEPAPayment({

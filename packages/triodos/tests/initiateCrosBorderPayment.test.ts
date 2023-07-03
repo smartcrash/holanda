@@ -83,6 +83,8 @@ test.serial('should throw error if currency is EUR', async (t) => {
     remittanceInformationUnstructured: 'Remit info',
     requestedExecutionDate: '2024-03-05',
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const error: any = await t.throwsAsync(() =>
     client.initiateCrossBorderPayment({
       ipAddr: '0.0.0.0',

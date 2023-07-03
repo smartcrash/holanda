@@ -37,6 +37,7 @@ test.serial('returns successful response', async (t) => {
 test.serial('should return if not at least one redirect uri is given', async (t) => {
   const { access_token: accessToken } = await client.getInitialAccessToken()
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const error: any = await t.throwsAsync(() => client.registerClient({ accessToken, redirectUris: [] }), {
     instanceOf: Errors.ResponseStatusCodeError,
   })
@@ -47,6 +48,7 @@ test.serial('should return if not at least one redirect uri is given', async (t)
 })
 
 test.serial('should throw if accessToken missing', async (t) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const error: any = await t.throwsAsync(
     () => client.registerClient({ accessToken: '', redirectUris: ['http://example.com'] }),
     { instanceOf: Errors.ResponseStatusCodeError },

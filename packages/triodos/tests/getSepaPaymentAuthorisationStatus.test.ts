@@ -18,6 +18,7 @@ test.beforeEach(
 )
 
 test.serial('throws error if resourceId and/or authorizationId does not exists', async (t) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const error: any = await t.throwsAsync(
     () => client.getSepaPaymentAuthorisationStatus({ resourceId: '', authorisationId: '' }),
     { instanceOf: ResponseStatusCodeError },

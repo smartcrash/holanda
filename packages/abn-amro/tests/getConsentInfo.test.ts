@@ -34,6 +34,7 @@ test.serial('should return successful response', async (t) => {
 })
 
 test.serial('should throw with accessToken', async (t) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const error: any = await t.throwsAsync(() => client.getConsentInfo({ accessToken: '1234567890' }), {
     instanceOf: ResponseStatusCodeError,
   })

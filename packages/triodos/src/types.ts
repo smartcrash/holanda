@@ -474,7 +474,13 @@ export type GetAccountTransactionsOptions = {
   /** Not supported, should be unset */
   deltaList?: boolean
   /** Pagination edge token, to be used when paging through transactions */
-  edgeToken: {}
+  edgeToken: {
+    edgeTokenTransactionTimestamp: string
+    edgeTokenTransactionID: { temporaryKey: boolean }
+    bookingStatus: 'booked' | 'pending' | 'both' | 'information' | 'all'
+    dateFrom: string
+    dateTo: string
+  }
 }
 
 type Transaction = {

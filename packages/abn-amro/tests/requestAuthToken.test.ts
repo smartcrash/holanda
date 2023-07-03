@@ -18,11 +18,7 @@ test.beforeEach(
 
 test.serial('should return redirect URL', async (t) => {
   const response = await client.requestAuthCode({
-    scope: [
-      ABNAmroScopes.PostSEPAPayment,
-      ABNAmroScopes.PostSEPAStandingOrderPayment,
-      ABNAmroScopes.PostXBorderPayment,
-    ],
+    scope: [ABNAmroScopes.PostSEPAPayment, ABNAmroScopes.PostSEPARecurrentPayment, ABNAmroScopes.PostXBorderPayment],
     redirectUri: 'https://localhost/auth',
     responseType: 'code',
   })

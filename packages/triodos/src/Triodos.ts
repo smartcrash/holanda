@@ -195,12 +195,7 @@ class Triodos {
   /**
    * @see https://developer.triodos.com/reference/getaccounts
    */
-  public async getAccounts({
-    accessToken,
-    consentId,
-    ipAddr,
-    withBalance: _withBalance,
-  }: GetAccountsOptions): Promise<GetAccountsResponse> {
+  public async getAccounts({ accessToken, consentId, ipAddr }: GetAccountsOptions): Promise<GetAccountsResponse> {
     const options: Parameters<typeof this.signedRequest>[1] = {}
     options.headers = {}
     if (ipAddr) options.headers['PSU-IP-Address'] = ipAddr
@@ -245,9 +240,6 @@ class Triodos {
     bookingStatus,
     dateFrom,
     dateTo,
-    withBalance: _withBalance,
-    deltaList: _deltaList,
-    entryReferenceFrom: _entryReferenceFrom,
   }: GetAccountTransactionsOptions): Promise<GetAccountTransactionsResponse> {
     const options: Parameters<typeof this.signedRequest>[1] = {}
     options.headers = {}
@@ -524,14 +516,14 @@ class Triodos {
 
   private calculateMessageDigest = (data: BinaryLike) => 'SHA-256=' + createHash('sha256').update(data).digest('base64')
 
-  private getSigningString(headers: Record<string, any>) {
+  private getSigningString(headers: Record<string, unknown>) {
     assert(typeof headers['Digest'] === 'string')
     assert(typeof headers['X-Request-ID'] === 'string')
 
     return `digest: ${headers['Digest']}\n` + `x-request-id: ${headers['X-Request-ID']}`
   }
 
-  private calculateSignature(headers: Record<string, any>, keyId: string, privateKey: string) {
+  private calculateSignature(headers: Record<string, unknown>, keyId: string, privateKey: string) {
     return (
       `keyId="${keyId}",` +
       'algorithm="rsa-sha256",' +

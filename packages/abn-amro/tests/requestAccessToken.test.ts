@@ -27,6 +27,7 @@ test.serial('should return sccessful response with minimun options', async (t) =
 })
 
 test.serial('should throw error if no `grantType` is passed', async (t) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const error: any = await t.throwsAsync(() => client.requestAccessToken({ grantType: '' }), {
     instanceOf: ResponseStatusCodeError,
   })
