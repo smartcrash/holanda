@@ -1,5 +1,5 @@
 {
-  "name": "@holanda/triodos-sdk",
+  "name": "@holanda/triodos",
   "description": "",
   "version": "0.0.0",
   "main": "build/index.js",

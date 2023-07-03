@@ -1,5 +1,5 @@
 {
-  "name": "@holanda/abn-sdk",
+  "name": "@holanda/abn-amro",
   "description": "",
   "version": "0.0.0",
   "main": "build/index.js",
