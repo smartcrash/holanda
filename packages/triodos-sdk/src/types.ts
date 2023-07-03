@@ -1,4 +1,4 @@
-export type TridosClientOptions = {
+export type TridosOptions = {
   keyId: string
   tenant: string
   signingCertificate: string

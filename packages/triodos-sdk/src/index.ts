@@ -1,1 +1,1 @@
-export { TriodosClient } from './TriodosClient'
+export { Triodos } from './Triodos'

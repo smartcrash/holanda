@@ -1,14 +1,14 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import test from 'ava';
-import { TriodosClient, Errors } from '../src/TriodosClient'
+import { Triodos, Errors } from '../src/Triodos'
 
 const { ResponseStatusCodeError } = Errors
 
-let client: TriodosClient
+let client: Triodos
 
-test.beforeEach(() => client = new TriodosClient({
-  keyId: 'SN=1,CA=CN=Xs2aTpp.com, O=TriodosBank, OID.2.5.4.97=PSDGO-BES-WGXZKBYE, L=Zeist, C=NL',
+test.beforeEach(() => client = new Triodos({
+  keyId: 'SN=1,CA=CN=Xs2aTpp.com, O=TriodosBank, OID.2.5.4.97=PSDYG-LJFPYJY-PD6RJYY, L=Zeist, C=NL',
   signingCertificate: readFileSync(join(__dirname, '/example-cert.pem'), { encoding: 'utf8' }),
   signingKey: readFileSync(join(__dirname, '/example-key.pem'), { encoding: 'utf8' }),
   tenant: 'nl'
@@ -21,7 +21,7 @@ test.serial('should return successful response', async (t) => {
       amount: "11"
     },
     debtorAccount: {
-      iban: "NL37TRIO0320564487"
+      iban: "NL86TRIO0320614433"
     },
     creditorAccount: {
       iban: "NL49RABO4963487330"
@@ -57,7 +57,7 @@ test.serial('should throw error if currency is other than EUR', async (t) => {
       amount: "11"
     },
     debtorAccount: {
-      iban: "NL37TRIO0320564487"
+      iban: "NL86TRIO0320614433"
     },
     creditorAccount: {
       iban: "NL49RABO4963487330"

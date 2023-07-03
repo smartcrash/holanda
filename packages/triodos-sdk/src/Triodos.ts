@@ -3,16 +3,16 @@ import { BinaryLike, createHash, createSign } from 'node:crypto';
 import querystring from 'node:querystring';
 import { errors as Errors, request } from 'undici';
 import { v4 as uuidv4 } from 'uuid';
-import { DeleteAccountInformationServiceConsentOptions, DeleteAccountInformationServiceConsentResponse, GetAccountBalancesOptions, GetAccountBalancesResponse, GetAccountInformationConsentStatusOptions, GetAccountInformationConsentStatusResponse, GetAccountTransactionsOptions, GetAccountTransactionsResponse, GetAccountsOptions, GetAccountsResponse, GetAuthorizationOptions, GetAuthorizationResponse, GetConfigutationResponse, GetInitialAccessTokenResponse, GetSepaPaymentAuthorisationStatusOptions, GetSepaPaymentAuthorisationStatusResponse, GetSepaPaymentDetailsOptions, GetSepaPaymentDetailsResponse, GetSepaPaymentStatusOptions, GetSepaPaymentStatusResponse, GetTokenOptions, GetTokenResponse, InitiateCrossBorderPaymentOptions, InitiateCrossBorderPaymentResponse, InitiateSepaPaymentOptions, InitiateSepaPaymentResponse, RegisterClientOptions, RegisterClientResponse, RegisterConsentOptions, RegisterConsentResposne, SubmitSepaPaymentAuthorisationStatusOptions, SubmitSepaPaymentAuthorisationStatusResponse, TridosClientOptions, UpdateConsentAuthorisationWithAccessTokenOptions, UpdateConsentAuthorisationWithAccessTokenResponse } from './types';
+import { DeleteAccountInformationServiceConsentOptions, DeleteAccountInformationServiceConsentResponse, GetAccountBalancesOptions, GetAccountBalancesResponse, GetAccountInformationConsentStatusOptions, GetAccountInformationConsentStatusResponse, GetAccountTransactionsOptions, GetAccountTransactionsResponse, GetAccountsOptions, GetAccountsResponse, GetAuthorizationOptions, GetAuthorizationResponse, GetConfigutationResponse, GetInitialAccessTokenResponse, GetSepaPaymentAuthorisationStatusOptions, GetSepaPaymentAuthorisationStatusResponse, GetSepaPaymentDetailsOptions, GetSepaPaymentDetailsResponse, GetSepaPaymentStatusOptions, GetSepaPaymentStatusResponse, GetTokenOptions, GetTokenResponse, InitiateCrossBorderPaymentOptions, InitiateCrossBorderPaymentResponse, InitiateSepaPaymentOptions, InitiateSepaPaymentResponse, RegisterClientOptions, RegisterClientResponse, RegisterConsentOptions, RegisterConsentResposne, SubmitSepaPaymentAuthorisationStatusOptions, SubmitSepaPaymentAuthorisationStatusResponse, TridosOptions, UpdateConsentAuthorisationWithAccessTokenOptions, UpdateConsentAuthorisationWithAccessTokenResponse } from './types';
 
-class TriodosClient {
+class Triodos {
   private readonly baseUrl = 'https://xs2a-sandbox.triodos.com/'
   private readonly defaultHeaders: Record<string, string> = {}
   private readonly tenant: string
   private readonly keyId: string
   private readonly signingKey: string
 
-  constructor({ keyId, tenant, signingCertificate, signingKey }: TridosClientOptions) {
+  constructor({ keyId, tenant, signingCertificate, signingKey }: TridosOptions) {
     this.keyId = keyId
     this.signingKey = signingKey
     this.tenant = tenant
@@ -445,4 +445,4 @@ class TriodosClient {
   }
 }
 
-export { Errors, TriodosClient };
+export { Errors, Triodos };

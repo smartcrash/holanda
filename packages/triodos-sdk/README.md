@@ -4,9 +4,9 @@
 
 ```ts
 import fs from "node:fs";
-import { TriodosClient } from "@holanda";
+import { Triodos } from "@holanda";
 
-const client = new TriodosClient({
+const client = new Triodos({
   keyId: "<YOUR_KEY_ID>",
   signingCertificate: fs.readFileSync("./example-cert.pem", {
     encoding: "utf8",
@@ -27,7 +27,7 @@ const requestBody = {
     amount: "11",
   },
   debtorAccount: {
-    iban: "NL37TRIO0320564487",
+    iban: "NL86TRIO0320614433",
   },
   creditorAccount: {
     iban: "NL49RABO4963487330",
