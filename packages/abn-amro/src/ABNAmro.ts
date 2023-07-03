@@ -1,8 +1,8 @@
 import querystring from 'node:querystring';
 import { Client, errors as Errors } from "undici";
-import { ABNClientOptions, DeleteSEPAPaymentOptions, DeleteSEPAPaymentResponse, GetBalancesOptions, GetBalancesResponse, GetConsentInfoOptions, GetConsentInfoResponse, GetDetailsOptions, GetDetailsResponse, GetFundsOptions, GetFundsResponse, GetSEPAPaymentOptions, GetSEPAPaymentResponse, GetTransactionsOptions, GetTransactionsResponse, PostSEPAPaymentOptions, PostSEPAPaymentResponse, PostStandingOrderPaymentOptions, PostStandingOrderPaymentResponse, PostXborderPaymentOptions, PostXborderPaymentResponse, PutSEPAPaymentOptions, PutSEPAPaymentResponse, PutXborderPaymentResponse, RequestAccessTokenOptions, RequestAccessTokenResponse, RequestAuthTokenOptions, RequestAuthTokenResponse } from './types';
+import { ABNAmroOptions, DeleteSEPAPaymentOptions, DeleteSEPAPaymentResponse, GetBalancesOptions, GetBalancesResponse, GetConsentInfoOptions, GetConsentInfoResponse, GetDetailsOptions, GetDetailsResponse, GetFundsOptions, GetFundsResponse, GetSEPAPaymentOptions, GetSEPAPaymentResponse, GetTransactionsOptions, GetTransactionsResponse, PostSEPAPaymentOptions, PostSEPAPaymentResponse, PostStandingOrderPaymentOptions, PostStandingOrderPaymentResponse, PostXborderPaymentOptions, PostXborderPaymentResponse, PutSEPAPaymentOptions, PutSEPAPaymentResponse, PutXborderPaymentResponse, RequestAccessTokenOptions, RequestAccessTokenResponse, RequestAuthTokenOptions, RequestAuthTokenResponse } from './types';
 
-class ABNClient {
+class ABNAmro {
   private readonly clientId: string
   private readonly apiKey: string
 
@@ -11,7 +11,7 @@ class ABNClient {
   private readonly auth: Client
   private readonly api: Client
 
-  constructor({ apiKey, clientId, privateKey, publicCertificate }: ABNClientOptions) {
+  constructor({ apiKey, clientId, privateKey, publicCertificate }: ABNAmroOptions) {
     this.clientId = clientId
     this.apiKey = apiKey
 
@@ -305,4 +305,4 @@ class ABNClient {
   }
 }
 
-export { ABNClient, Errors };
+export { ABNAmro, Errors };

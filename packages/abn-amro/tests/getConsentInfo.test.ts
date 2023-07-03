@@ -1,14 +1,14 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import test from 'ava';
-import { ABNClient, Errors } from '../src/ABNClient'
-import { ABNScopes } from '../src/enums';
+import { ABNAmro, Errors } from '../src/ABNAmro'
+import { ABNAmroScopes } from '../src/enums';
 
 const { ResponseStatusCodeError } = Errors
 
-let client: ABNClient
+let client: ABNAmro
 
-test.beforeEach(() => client = new ABNClient({
+test.beforeEach(() => client = new ABNAmro({
   apiKey: 'u8cVObtL8jnUbdAGc4ji1ybp08OoCrQg',
   clientId: 'TPP_test',
   publicCertificate: readFileSync(join(__dirname, '/public-certificate.pem'), { encoding: 'utf8' }),
@@ -18,14 +18,14 @@ test.beforeEach(() => client = new ABNClient({
 test.serial('should return successful response', async (t) => {
   const { access_token: accessToken } = await client.requestAccessToken({
     grantType: 'client_credentials',
-    scope: [ABNScopes.PostSEPAPayment],
+    scope: [ABNAmroScopes.PostSEPAPayment],
   })
 
   const response = await client.getConsentInfo({ accessToken })
 
   t.assert(typeof response === 'object')
   t.assert(typeof response.valid === 'number')
-  t.is(response.scopes, ABNScopes.PostSEPAPayment)
+  t.is(response.scopes, ABNAmroScopes.PostSEPAPayment)
   t.is(response.consentStatus, 'FULLY_SIGNED')
   t.is(response.consentExpiresIn, '2 days, 2 hours, 2 minutes, and 2 seconds')
 });

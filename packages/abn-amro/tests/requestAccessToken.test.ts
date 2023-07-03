@@ -1,13 +1,13 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import test from 'ava';
-import { ABNClient, Errors } from '../src/ABNClient'
+import { ABNAmro, Errors } from '../src/ABNAmro'
 
 const { ResponseStatusCodeError } = Errors
 
-let client: ABNClient
+let client: ABNAmro
 
-test.beforeEach(() => client = new ABNClient({
+test.beforeEach(() => client = new ABNAmro({
   apiKey: 'u8cVObtL8jnUbdAGc4ji1ybp08OoCrQg',
   clientId: 'TPP_test',
   publicCertificate: readFileSync(join(__dirname, '/public-certificate.pem'), { encoding: 'utf8' }),

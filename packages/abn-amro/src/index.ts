@@ -1,2 +1,2 @@
-export { ABNClient } from './ABNClient'
+export { ABNAmro } from './ABNAmro'
 export * from './enums'

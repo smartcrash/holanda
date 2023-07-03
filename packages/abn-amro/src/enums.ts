@@ -1,4 +1,4 @@
-export enum ABNScopes {
+export enum ABNAmroScopes {
   /** Execute or cancel SEPA payment */
   PostSEPAPayment = 'psd2:payment:sepa:write',
 
