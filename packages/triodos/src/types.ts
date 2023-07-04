@@ -483,7 +483,7 @@ export type GetAccountTransactionsOptions = {
   }
 }
 
-type Transaction = {
+export type Transaction = {
   transactionId: string
   bookingDate: string
   valueDate: string
