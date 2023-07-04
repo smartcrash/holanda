@@ -2,37 +2,70 @@ import { ABNAmroScopes } from './enums'
 
 export type ABNAmroOptions = {
   apiKey: string
+  /** Unique ID that that identifies the ABN AMRO consumer or Third Party Payment Service Provider. */
   clientId: string
   publicCertificate: string
   privateKey: string
 }
 
-export type RequestAuthTokenOptions = {
+export type RequestAuthCodeOptions = {
   /** Scopes for which the access token is issued. */
   scope: ABNAmroScopes[]
   /** Value must be 'code'. It indicates which grant to execute. */
   responseType: string
+  /** Value must be 'code'. It indicates which oauth flow to process. */
   flow?: string
+  /**
+   * The authorization code is sent to the URL specified in this parameter.
+   * This field is mandatory if redirect URLs or wildcard URLs are registered
+   * at ABN AMRO for the client or third party payment service providers.
+   * @example https://organizationurl/auth
+   */
   redirectUri?: string
+  /**
+   * Parameter returned to the calling consumer. This is used for session management.
+   * @example RanD0me-Value
+   */
   state?: string
+  /**
+   * Unique ID generated during the registration of a payment that is authorized by the ABN AMRO client.
+   * @example Bran-eacti0n-Idaxam-plE0
+   */
   transactionId?: string
-  bank?: string
+  /**
+   * Bank ID of the ABN AMRO client.
+   * @defaultValue NLAA01
+   */
+  bank?: 'BEPB01' | 'BEPB02' | 'NLAA01'
 }
 
-export type RequestAuthTokenResponse = string
+/**
+ * Successful authorization code response.
+ * @example https://organizationurl/auth?code=EhiS_Epamp1A_0f-AaThD0deF0P0urWeFreNce45
+ */
+export type RequestAuthCodeResponse = string
 
 export type RequestAccessTokenOptions = {
+  /** Authorization code. */
   code?: string
+  /** Type of **OAuth** flow that is used. */
   grantType: string
+  /** Mandatory, if `redirect_uri` is specified in the request. */
   redirectUri?: string
+  /** Obtained during the exchange of an authcode or a previous refresh request. */
   refreshToken?: string
+  /** Scopes for which the access token is issued. */
   scope?: ABNAmroScopes[]
 }
 
 export type RequestAccessTokenResponse = {
+  /** Access token used to access an API. */
   access_token: string
+  /** Refresh token is valid for 90 days. It is used to request a new access token and refresh token. */
   refresh_token?: string
+  /** Validity of access token in seconds. */
   token_type: string
+  /** Type of token provided. */
   expires_in: number
 }
 

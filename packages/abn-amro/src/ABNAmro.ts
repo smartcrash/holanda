@@ -27,9 +27,21 @@ import {
   PutXborderPaymentResponse,
   RequestAccessTokenOptions,
   RequestAccessTokenResponse,
-  RequestAuthTokenOptions,
-  RequestAuthTokenResponse,
+  RequestAuthCodeOptions,
+  RequestAuthCodeResponse,
 } from './types'
+
+/**
+ * @example
+ * ```ts
+ * const client = new ABNAmro({
+ *   apiKey: '<API_KEY>',
+ *   clientId: '<CLIENT_ID>',
+ *   publicCertificate: readFileSync(join(__dirname, '/public-certificate.pem'), { encoding: 'utf8' }),
+ *   privateKey: readFileSync(join(__dirname, '/private-key.pem'), { encoding: 'utf8' }),
+ * })
+ * ```
+ */
 
 class ABNAmro {
   private readonly clientId: string
@@ -40,6 +52,9 @@ class ABNAmro {
   private readonly auth: Client
   private readonly api: Client
 
+  /**
+   * @param options
+   */
   constructor({ apiKey, clientId, privateKey, publicCertificate }: ABNAmroOptions) {
     this.clientId = clientId
     this.apiKey = apiKey
@@ -55,6 +70,23 @@ class ABNAmro {
   }
 
   /**
+   * Retrieves an access token and refresh Token. The access token and refresh token
+   * are as used to ensure that authentication is complete and that consent has been
+   * given by the client to the consumer. The access token is used when calling APIs
+   * on the ABN AMRO API gateway.
+   *
+   * @param options
+   *
+   * @example
+   * ```ts
+   * const response = await client.requestAccessToken({ grantType: 'client_credentials' })
+   * // {
+   * //   access_token: '3srrbf0WcPTMKCwGBWgXdU6mNnoj',
+   * //   token_type: 'Bearer',
+   * //   expires_in: 7200
+   * // }
+   * ```
+   *
    * @see https://developer.abnamro.com/api-products/authorization-code#tag/Access-and-refresh-token/operation/requestAccessToken
    */
   public async requestAccessToken({
@@ -85,6 +117,22 @@ class ABNAmro {
   }
 
   /**
+   * Retrieves an authorization code. The authorization code is used to ensure
+   * that an ABN AMRO client or end user has provided permission to the API consumer.
+   * This authorization code is passed to the authorization server when requesting
+   * and access and a refresh token.
+   * @param options
+   *
+   * @example
+   * ```ts
+   * const response = await client.requestAuthCode({
+   *   scope: [ABNAmroScopes.PostSEPAPayment],
+   *   redirectUri: 'https://localhost/auth',
+   *   responseType: 'code',
+   * })
+   * // https://organizationurl/auth?code=EhiS_Epamp1A_0f-AaThD0deF0P0urWeFreNce45
+   * ```
+   *
    * @see https://developer.abnamro.com/api-products/authorization-code#tag/Authorization-code/operation/requestAuthCode
    */
   public async requestAuthCode({
@@ -94,8 +142,8 @@ class ABNAmro {
     redirectUri,
     state,
     transactionId,
-    bank,
-  }: RequestAuthTokenOptions): Promise<RequestAuthTokenResponse> {
+    bank = 'NLAA01',
+  }: RequestAuthCodeOptions): Promise<RequestAuthCodeResponse> {
     const queryParams: Record<string, string | undefined> = {
       client_id: this.clientId,
       response_type: responseType,
