@@ -1,7 +1,6 @@
 {
   "files": [],
   "references": [
-    { "path": "./packages/abn-amro" },
-    { "path": "./packages/triodos" }
+    { "path": "./packages/*" },
   ]
 }
