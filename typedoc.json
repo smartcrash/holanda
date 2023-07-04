@@ -1,0 +1,6 @@
+{
+  "entryPoints": ["packages/*"],
+  "name": "Holanda",
+  "entryPointStrategy": "packages",
+  "includeVersion": false,
+}

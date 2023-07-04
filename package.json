@@ -6,7 +6,8 @@
     "build": "lerna run build",
     "test": "lerna run test",
     "format": "prettier --write ./packages/* --cache",
-    "lint": "eslint packages/* --ext .ts --config .eslintrc --cache"
+    "lint": "eslint packages/* --ext .ts --config .eslintrc --cache",
+    "docs": "typedoc"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
     "eslint": "^8.44.0",
-    "prettier": "^2.8.8"
+    "prettier": "^2.8.8",
+    "typedoc": "^0.24.8"
   }
 }
