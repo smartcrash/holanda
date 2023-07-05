@@ -1,12 +1,21 @@
-import { GetAuthorizationCodeOptions, GetAuthorizationCodeResponse, RaboPremiumOptions } from './types'
+import { request } from 'undici'
+import {
+  GetAuthorizationCodeOptions,
+  GetAuthorizationCodeResponse,
+  RaboPremiumOptions,
+  RequestAccessTokenOptions,
+  RequestAccessTokenResponse,
+} from './types'
 
 class RaboPremium {
   private readonly AUTH_URL = 'https://oauth-sandbox.rabobank.nl/openapi/sandbox/oauth2-premium'
 
   private readonly clientId: string
+  private readonly clientSecret: string
 
-  constructor({ clientId }: RaboPremiumOptions) {
+  constructor({ clientId, clientSecret }: RaboPremiumOptions) {
     this.clientId = clientId
+    this.clientSecret = clientSecret
   }
 
   /**
@@ -35,11 +44,35 @@ class RaboPremium {
   }
 
   /**
-   * @todo
+   * This endpoint allows requesting an access token following one of the flows below:
+   * - Authorization Code (exchange code for access token)
+   * - Refresh Token (exchange refresh token for a new access token)
    * @see https://developer-sandbox.rabobank.nl/product/46913/api/46910#/AccessAuthorizationSandbox_109/operation/%2Ftoken/post
    */
-  public async requestAccessToken() {
-    throw new Error('Not Implemented')
+  public async requestAccessToken({
+    grantType,
+    code,
+    redirectUri,
+    refreshToken,
+  }: RequestAccessTokenOptions): Promise<RequestAccessTokenResponse> {
+    const bodyParams = new URLSearchParams()
+    bodyParams.set('grant_type', grantType)
+    if (code) bodyParams.set('code', code)
+    if (redirectUri) bodyParams.set('redirect_uri', redirectUri)
+    if (refreshToken) bodyParams.set('refresh_token', refreshToken)
+
+    const { body } = await request(`${this.AUTH_URL}/token`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Basic ${Buffer.from(`${this.clientId}:${this.clientSecret}`).toString('base64')}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Accept: 'application/json',
+      },
+      body: bodyParams.toString(),
+      throwOnError: true,
+    })
+
+    return body.json()
   }
 
   /**
