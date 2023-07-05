@@ -125,7 +125,7 @@ class ABNAmro {
    *
    * @example
    * ```ts
-   * const response = await client.requestAuthCode({
+   * const response = client.requestAuthCode({
    *   scope: [ABNAmroScopes.PostSEPAPayment],
    *   redirectUri: 'https://localhost/auth',
    *   responseType: 'code',
