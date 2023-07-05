@@ -13,6 +13,9 @@ class RaboPremium {
   private readonly clientId: string
   private readonly clientSecret: string
 
+  /**
+   * @param options
+   */
   constructor({ clientId, clientSecret }: RaboPremiumOptions) {
     this.clientId = clientId
     this.clientSecret = clientSecret
@@ -47,6 +50,8 @@ class RaboPremium {
    * This endpoint allows requesting an access token following one of the flows below:
    * - Authorization Code (exchange code for access token)
    * - Refresh Token (exchange refresh token for a new access token)
+   * @param options
+   *
    * @see https://developer-sandbox.rabobank.nl/product/46913/api/46910#/AccessAuthorizationSandbox_109/operation/%2Ftoken/post
    */
   public async requestAccessToken({
