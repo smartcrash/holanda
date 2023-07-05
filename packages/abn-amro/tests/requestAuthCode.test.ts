@@ -18,11 +18,15 @@ test.beforeEach(
 
 test.serial('should return redirect URL', async (t) => {
   const response = await client.requestAuthCode({
-    scope: [ABNAmroScopes.PostSEPAPayment, ABNAmroScopes.PostSEPARecurrentPayment, ABNAmroScopes.PostXBorderPayment],
+    scope: [ABNAmroScopes.PostSEPAPayment],
     redirectUri: 'https://localhost/auth',
     responseType: 'code',
   })
 
   t.is(typeof response, 'string')
-  t.true(response.startsWith('https://asb-consent'))
+  t.true(response.startsWith('https://auth-sandbox.abnamro.com/as/authorization.oauth2?'))
+  t.true(response.includes('client_id=TPP_test'))
+  t.true(response.includes(`redirect_uri=${encodeURIComponent('https://localhost/auth')}`))
+  t.true(response.includes('response_type=code'))
+  t.true(response.includes(`scope=${encodeURIComponent(ABNAmroScopes.PostSEPAPayment)}`))
 })

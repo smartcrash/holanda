@@ -12,7 +12,7 @@ export type RequestAuthCodeOptions = {
   /** Scopes for which the access token is issued. */
   scope: ABNAmroScopes[]
   /** Value must be 'code'. It indicates which grant to execute. */
-  responseType: string
+  responseType: 'code'
   /** Value must be 'code'. It indicates which oauth flow to process. */
   flow?: string
   /**
@@ -41,7 +41,7 @@ export type RequestAuthCodeOptions = {
 
 /**
  * Successful authorization code response.
- * @example https://organizationurl/auth?code=EhiS_Epamp1A_0f-AaThD0deF0P0urWeFreNce45
+ * @example https://auth-sandbox.abnamro.com/as/authorization.oauth2?client_id=TPP_test&response_type=code&scope=psd2%3Apayment%3Asepa%3Awrite&redirect_uri=https%3A%2F%2Flocalhost%2Fauth
  */
 export type RequestAuthCodeResponse = string
 

@@ -130,39 +130,31 @@ class ABNAmro {
    *   redirectUri: 'https://localhost/auth',
    *   responseType: 'code',
    * })
-   * // https://organizationurl/auth?code=EhiS_Epamp1A_0f-AaThD0deF0P0urWeFreNce45
+   * // https://auth-sandbox.abnamro.com/as/authorization.oauth2?client_id=TPP_test&response_type=code&scope=psd2%3Apayment%3Asepa%3Awrite&redirect_uri=https%3A%2F%2Flocalhost%2Fauth
    * ```
    *
    * @see https://developer.abnamro.com/api-products/authorization-code#tag/Authorization-code/operation/requestAuthCode
    */
-  public async requestAuthCode({
+  public requestAuthCode({
     scope,
     responseType,
     flow,
     redirectUri,
     state,
     transactionId,
-    bank = 'NLAA01',
-  }: RequestAuthCodeOptions): Promise<RequestAuthCodeResponse> {
-    const queryParams: Record<string, string | undefined> = {
-      client_id: this.clientId,
-      response_type: responseType,
-      flow,
-      scope: scope.join(' '),
-      redirect_uri: redirectUri,
-      state,
-      transactionId,
-      bank,
-    }
+    bank,
+  }: RequestAuthCodeOptions): RequestAuthCodeResponse {
+    const queryParams = new URLSearchParams()
+    queryParams.set('client_id', this.clientId)
+    queryParams.set('response_type', responseType)
+    queryParams.set('scope', scope.join(' '))
+    if (bank) queryParams.set('bank', bank)
+    if (flow) queryParams.set('flow', flow)
+    if (redirectUri) queryParams.set('redirect_uri', redirectUri)
+    if (state) queryParams.set('state', state)
+    if (transactionId) queryParams.set('transactionId', transactionId)
 
-    const { headers } = await this.auth.request({
-      path: `/as/authorization.oauth2`,
-      method: 'GET',
-      query: queryParams,
-      throwOnError: true,
-    })
-
-    return headers['location'] as string
+    return `https://auth-sandbox.abnamro.com/as/authorization.oauth2?${queryParams.toString()}`
   }
 
   /**
