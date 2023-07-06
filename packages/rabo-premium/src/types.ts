@@ -111,62 +111,57 @@ export type GetConsentDetailsOptions = {
   consentId: string
 }
 
-/**
- * @example
- * ```json
- * {
- *    "consentId":"6dfa1a2a-888c-4015-8099-f88b080d0bbb",
- *    "access":{
- *       "bai.accountinformation.read":[
- *          {
- *             "iban":"NL52RABO0125618484",
- *             "currency":"EUR",
- *             "status":"valid",
- *             "validUntil":"9999-12-31"
- *          },
- *          {
- *             "iban":"NL80RABO1127000002",
- *             "currency":"EUR",
- *             "status":"valid",
- *             "validUntil":"9999-12-31"
- *          }
- *       ],
- *       "bbpi.bulk.read-write":[
- *          {
- *             "iban":"NL52RABO0125618484",
- *             "currency":"EUR",
- *             "status":"valid",
- *             "validUntil":"9999-12-31"
- *          },
- *          {
- *             "iban":"NL80RABO1127000002",
- *             "currency":"EUR",
- *             "status":"valid",
- *             "validUntil":"9999-12-31"
- *          }
- *       ],
- *       "bdd.payments.write":[
- *          {
- *             "iban":"NL52RABO0125618484",
- *             "currency":"EUR",
- *             "status":"valid",
- *             "validUntil":"9999-12-31"
- *          },
- *          {
- *             "iban":"NL80RABO1127000002",
- *             "currency":"EUR",
- *             "status":"valid",
- *             "validUntil":"9999-12-31"
- *          }
- *       ]
- *    }
- * }
- * ```
- */
 export type GetConsentDetailsResponse = {
   consentId: string
   /**
    * An associative array relating scopes (field names) to consented products (values).
+   * @example
+   * ```json
+   * {
+   *    "bai.accountinformation.read":[
+   *       {
+   *          "iban":"NL52RABO0125618484",
+   *          "currency":"EUR",
+   *          "status":"valid",
+   *          "validUntil":"9999-12-31"
+   *       },
+   *       {
+   *          "iban":"NL80RABO1127000002",
+   *          "currency":"EUR",
+   *          "status":"valid",
+   *          "validUntil":"9999-12-31"
+   *       }
+   *    ],
+   *    "bbpi.bulk.read-write":[
+   *       {
+   *          "iban":"NL52RABO0125618484",
+   *          "currency":"EUR",
+   *          "status":"valid",
+   *          "validUntil":"9999-12-31"
+   *       },
+   *       {
+   *          "iban":"NL80RABO1127000002",
+   *          "currency":"EUR",
+   *          "status":"valid",
+   *          "validUntil":"9999-12-31"
+   *       }
+   *    ],
+   *    "bdd.payments.write":[
+   *       {
+   *          "iban":"NL52RABO0125618484",
+   *          "currency":"EUR",
+   *          "status":"valid",
+   *          "validUntil":"9999-12-31"
+   *       },
+   *       {
+   *          "iban":"NL80RABO1127000002",
+   *          "currency":"EUR",
+   *          "status":"valid",
+   *          "validUntil":"9999-12-31"
+   *       }
+   *    ]
+   * }
+   * ```
    */
   access: {
     'bai.accountinformation.read': {
