@@ -6,7 +6,19 @@ export type RaboPremiumOptions = {
    * @example 06d46060-c193-41a8-9867-c9f06a1e52a2
    */
   clientId: string
+  /**
+   * Client secret as provided by the Rabobank developer portal.
+   */
   clientSecret: string
+  /**
+   * Private key
+   */
+  key: string
+  /**
+   * Signing certificate
+   */
+  cert: string
+  certSerialNumber: string
 }
 
 export type GetAuthorizationCodeOptions = {
@@ -93,4 +105,87 @@ export type RequestAccessTokenResponse = {
    * @example a:consentId b75f5ee4-6b25-41af-bb9c-31128d09151b
    */
   metadata?: string
+}
+
+export type GetConsentDetailsOptions = {
+  consentId: string
+}
+
+/**
+ * @example
+ * ```json
+ * {
+ *    "consentId":"6dfa1a2a-888c-4015-8099-f88b080d0bbb",
+ *    "access":{
+ *       "bai.accountinformation.read":[
+ *          {
+ *             "iban":"NL52RABO0125618484",
+ *             "currency":"EUR",
+ *             "status":"valid",
+ *             "validUntil":"9999-12-31"
+ *          },
+ *          {
+ *             "iban":"NL80RABO1127000002",
+ *             "currency":"EUR",
+ *             "status":"valid",
+ *             "validUntil":"9999-12-31"
+ *          }
+ *       ],
+ *       "bbpi.bulk.read-write":[
+ *          {
+ *             "iban":"NL52RABO0125618484",
+ *             "currency":"EUR",
+ *             "status":"valid",
+ *             "validUntil":"9999-12-31"
+ *          },
+ *          {
+ *             "iban":"NL80RABO1127000002",
+ *             "currency":"EUR",
+ *             "status":"valid",
+ *             "validUntil":"9999-12-31"
+ *          }
+ *       ],
+ *       "bdd.payments.write":[
+ *          {
+ *             "iban":"NL52RABO0125618484",
+ *             "currency":"EUR",
+ *             "status":"valid",
+ *             "validUntil":"9999-12-31"
+ *          },
+ *          {
+ *             "iban":"NL80RABO1127000002",
+ *             "currency":"EUR",
+ *             "status":"valid",
+ *             "validUntil":"9999-12-31"
+ *          }
+ *       ]
+ *    }
+ * }
+ * ```
+ */
+export type GetConsentDetailsResponse = {
+  consentId: string
+  /**
+   * An associative array relating scopes (field names) to consented products (values).
+   */
+  access: {
+    'bai.accountinformation.read': {
+      iban: string
+      currency: string
+      status: 'valid' | 'expired' | 'revokedByPsu' | 'terminatedByTpp' | 'received' | 'rejected'
+      validUntil: string
+    }[]
+    'bbpi.bulk.read-write': {
+      iban: string
+      currency: string
+      status: 'valid' | 'expired' | 'revokedByPsu' | 'terminatedByTpp' | 'received' | 'rejected'
+      validUntil: string
+    }[]
+    'bdd.payments.write': {
+      iban: string
+      currency: string
+      status: 'valid' | 'expired' | 'revokedByPsu' | 'terminatedByTpp' | 'received' | 'rejected'
+      validUntil: string
+    }[]
+  }
 }
