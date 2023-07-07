@@ -111,6 +111,13 @@ export type GetConsentDetailsOptions = {
   consentId: string
 }
 
+export type AccountReference = {
+  iban: string
+  currency: string
+  status: 'valid' | 'expired' | 'revokedByPsu' | 'terminatedByTpp' | 'received' | 'rejected'
+  validUntil: string
+}
+
 export type GetConsentDetailsResponse = {
   consentId: string
   /**
@@ -164,24 +171,9 @@ export type GetConsentDetailsResponse = {
    * ```
    */
   access: {
-    'bai.accountinformation.read': {
-      iban: string
-      currency: string
-      status: 'valid' | 'expired' | 'revokedByPsu' | 'terminatedByTpp' | 'received' | 'rejected'
-      validUntil: string
-    }[]
-    'bbpi.bulk.read-write': {
-      iban: string
-      currency: string
-      status: 'valid' | 'expired' | 'revokedByPsu' | 'terminatedByTpp' | 'received' | 'rejected'
-      validUntil: string
-    }[]
-    'bdd.payments.write': {
-      iban: string
-      currency: string
-      status: 'valid' | 'expired' | 'revokedByPsu' | 'terminatedByTpp' | 'received' | 'rejected'
-      validUntil: string
-    }[]
+    'bai.accountinformation.read': AccountReference[]
+    'bbpi.bulk.read-write': AccountReference[]
+    'bdd.payments.write': AccountReference[]
   }
 }
 
@@ -189,37 +181,44 @@ export type GetAccountListOptions = {
   accessToken: string
 }
 
+/**
+ * Links to the account, which can be directly used for retrieving account
+ * information from this dedicated account. Links to "balances" and/or
+ * "transactions" These links are only supported, when the corresponding
+ * consent has been already granted.
+ */
+export type LinksAccountDetails = {
+  account: string
+  balances: string
+  transactions: string
+}
+
+/**
+ * Account status. The value is one of the following:
+ * - "enabled": account is available
+ * - "deleted": account is terminated
+ * - "blocked": account is blocked e.g. for legal reasons
+ */
+export type AccountStatus = 'enabled' | 'deleted' | 'blocked'
+
+export type AccountDetails = {
+  _links: LinksAccountDetails
+  /** ISO 4217 Alpha 3 currency code */
+  currency: string
+  /** IBAN of an account */
+  iban: string
+  /** The given alias the holder has given to the account. */
+  name: string
+  /** The name of the account holder. */
+  ownerName: string
+  /** Account Id. */
+  resourceId: string
+
+  status: AccountStatus
+}
+
 export type GetAccountListResponse = {
-  accounts: {
-    /**
-     * Links to the account, which can be directly used for retrieving account
-     * information from this dedicated account. Links to "balances" and/or
-     * "transactions" These links are only supported, when the corresponding
-     * consent has been already granted.
-     */
-    _links: {
-      account: string
-      balances: string
-      transactions: string
-    }
-    /** ISO 4217 Alpha 3 currency code */
-    currency: string
-    /** IBAN of an account */
-    iban: string
-    /** The given alias the holder has given to the account. */
-    name: string
-    /** The name of the account holder. */
-    ownerName: string
-    /** Account Id. */
-    resourceId: string
-    /**
-     * Account status. The value is one of the following:
-     * - "enabled": account is available
-     * - "deleted": account is terminated
-     * - "blocked": account is blocked e.g. for legal reasons
-     */
-    status: 'enabled' | 'deleted' | 'blocked'
-  }[]
+  accounts: AccountDetails[]
 }
 
 export type GetAccountDetailsOptions = {
@@ -232,33 +231,4 @@ export type GetAccountDetailsOptions = {
   accountId: string
 }
 
-export type GetAccountDetailsResponse = {
-  /**
-   * Links to the account, which can be directly used for retrieving account
-   * information from this dedicated account. Links to "balances" and/or
-   * "transactions" These links are only supported, when the corresponding
-   * consent has been already granted.
-   */
-  _links: {
-    account: string
-    balances: string
-    transactions: string
-  }
-  /** ISO 4217 Alpha 3 currency code */
-  currency: string
-  /** IBAN of an account */
-  iban: string
-  /** The given alias the holder has given to the account. */
-  name: string
-  /** The name of the account holder. */
-  ownerName: string
-  /** Account Id. */
-  resourceId: string
-  /**
-   * Account status. The value is one of the following:
-   * - "enabled": account is available
-   * - "deleted": account is terminated
-   * - "blocked": account is blocked e.g. for legal reasons
-   */
-  status: 'enabled' | 'deleted' | 'blocked'
-}
+export type GetAccountDetailsResponse = AccountDetails
