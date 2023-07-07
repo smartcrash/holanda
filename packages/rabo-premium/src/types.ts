@@ -232,3 +232,49 @@ export type GetAccountDetailsOptions = {
 }
 
 export type GetAccountDetailsResponse = AccountDetails
+
+export type GetBalanceOptions = {
+  accessToken: string
+  accountId: string
+}
+
+export type GetBalanceResponse = {
+  account: {
+    /** ISO 4217 Alpha 3 currency code. */
+    currency: string
+    /** IBAN of the account. */
+    iban: string
+  }
+  /**
+   * A list of balances regarding this account, e.g. the current balance, the last booked balance.
+   * The list might be restricted to the current balance.
+   */
+  balances: {
+    balanceAmount: {
+      /**
+       * The amount given with fractional digits, where fractions must be
+       * compliant to the currency definition. Up to 14 significant figures.
+       * Negative amounts are signed by minus. The decimal separator is a dot.
+       */
+      amount: string
+      currency: string
+    }
+    balanceType:
+      | 'closingBooked'
+      | 'expected'
+      | 'authorised'
+      | 'openingBooked'
+      | 'interimAvailable'
+      | 'forwardAvailable'
+      | 'nonInvoiced'
+      | 'available'
+    /**
+     * @example 2023-02-01T14:07:17.000Z
+     */
+    lastChangeDateTime?: string
+    /**
+     * @example 2023-01-31
+     */
+    referenceDate?: string
+  }[]
+}

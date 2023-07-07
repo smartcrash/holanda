@@ -9,6 +9,8 @@ import {
   GetAccountListResponse,
   GetAuthorizationCodeOptions,
   GetAuthorizationCodeResponse,
+  GetBalanceOptions,
+  GetBalanceResponse,
   GetConsentDetailsOptions,
   GetConsentDetailsResponse,
   RaboPremiumOptions,
@@ -19,7 +21,6 @@ import {
 class RaboPremium {
   private readonly AUTH_URL = 'https://oauth-sandbox.rabobank.nl/openapi/sandbox/oauth2-premium'
   private readonly client: Client
-  private readonly cert: string
   private readonly key: string
   /**
    * @todo Remove and resolve from cert
@@ -38,7 +39,6 @@ class RaboPremium {
     this.clientId = clientId
     this.clientSecret = clientSecret
     this.client = new Client('https://api-sandbox.rabobank.nl', { connect: { key, cert } })
-    this.cert = cert
     this.key = key
     this.certSerialNumber = certSerialNumber
 
@@ -149,6 +149,21 @@ class RaboPremium {
   }: GetAccountDetailsOptions): Promise<GetAccountDetailsResponse> {
     const { body } = await this.signedRequest({
       path: `/openapi/sandbox/payments/insight/accounts/${accountId}`,
+      headers: { Authorization: `Bearer ${accessToken}` },
+      method: 'GET',
+    })
+
+    return body.json()
+  }
+
+  /**
+   * Delivers the actual and end of day balance for a specific consented payment account.
+   * @param options
+   * @see https://developer-sandbox.rabobank.nl/product/51891/api/50832#/BusinessAccountInsightBalances_1124/operation/%2Faccounts%2F{account-id}%2Fbalances/get
+   */
+  public async getBalance({ accessToken, accountId }: GetBalanceOptions): Promise<GetBalanceResponse> {
+    const { body } = await this.signedRequest({
+      path: `/openapi/sandbox/payments/insight/accounts/${accountId}/balances`,
       headers: { Authorization: `Bearer ${accessToken}` },
       method: 'GET',
     })
