@@ -184,3 +184,40 @@ export type GetConsentDetailsResponse = {
     }[]
   }
 }
+
+export type GetAccountListOptions = {
+  accessToken: string
+}
+
+export type GetAccountListResponse = {
+  accounts: {
+    /**
+     * Links to the account, which can be directly used for retrieving account
+     * information from this dedicated account. Links to "balances" and/or
+     * "transactions" These links are only supported, when the corresponding
+     * consent has been already granted.
+     */
+    _links: {
+      account: string
+      balances: string
+      transactions: string
+    }
+    /** ISO 4217 Alpha 3 currency code */
+    currency: string
+    /** IBAN of an account */
+    iban: string
+    /** The given alias the holder has given to the account. */
+    name: string
+    /** The name of the account holder. */
+    ownerName: string
+    /** Account Id. */
+    resourceId: string
+    /**
+     * Account status. The value is one of the following:
+     * - "enabled": account is available
+     * - "deleted": account is terminated
+     * - "blocked": account is blocked e.g. for legal reasons
+     */
+    status: 'enabled' | 'deleted' | 'blocked'
+  }[]
+}
