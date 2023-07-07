@@ -7,6 +7,8 @@ import {
   GetAccountDetailsResponse,
   GetAccountListOptions,
   GetAccountListResponse,
+  GetAccountTransactionsOptions,
+  GetAccountTransactionsResponse,
   GetAuthorizationCodeOptions,
   GetAuthorizationCodeResponse,
   GetBalanceOptions,
@@ -24,6 +26,7 @@ class RaboPremium {
   private readonly key: string
   /**
    * @todo Remove and resolve from cert
+   * @see https://www.geeksforgeeks.org/node-js-x509-serialnumber-property/
    */
   private readonly certSerialNumber: string
 
@@ -169,6 +172,15 @@ class RaboPremium {
     })
 
     return body.json()
+  }
+
+  /**
+   * Delivers transactions for a specific consented payment account.
+   * @param options
+   * @see https://developer-sandbox.rabobank.nl/product/51891/api/51888#/BusinessAccountInsightTransactions_122/operation/%2Faccounts%2F{account-id}%2Ftransactions/get
+   */
+  public async getAccountTransactions({}: GetAccountTransactionsOptions): Promise<GetAccountTransactionsResponse> {
+    return
   }
 
   private signedRequest: Dispatcher['request'] = (options) => {

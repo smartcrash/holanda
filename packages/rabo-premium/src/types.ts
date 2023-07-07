@@ -278,3 +278,123 @@ export type GetBalanceResponse = {
     referenceDate?: string
   }[]
 }
+
+export type GetAccountTransactionsOptions = {
+  acessToken: string
+  accountId: string
+
+  /** The status of the booking in the bank backend, only "booked" is supported. */
+  bookingStatus: 'booked'
+
+  /** Start booking date time in UTC. Date can be max 15 months before now. */
+  dateFrom: Date | string
+
+  /** End booking date time in UTC. */
+  dateTo: Date | string
+
+  /** nextPageToken as returned in the previous response leading to the next page of transactions. */
+  nextPageToken?: string
+
+  /**
+   * Number of transactions to be returned in one response. When not provided,
+   * the default is 500, maximum is 500.
+   */
+  size?: number
+
+  /**
+   * List of fields to be dropped from the response.
+   * When not provided, the values are present in the response.
+   * @todo Implement fancy key autocompletion and remove keys from response
+   */
+  dropFields: string[] | string
+}
+
+export type GetAccountTransactionsResponse = {
+  account: {
+    bban?: string
+    currency: string
+    iban: string
+  }
+  transactions: {
+    _links: {
+      /** A link to the resource providing the details of one account */
+      account: string
+      /** Navigation link for paginated account reports */
+      next: string
+    }
+    /** Array of transaction details */
+    booked: [
+      {
+        /**
+         * Bank transaction code as used by the ASPSP and using the sub elements
+         * of this structured code defined by ISO 20022.
+         * This code type is concatenating the three ISO20022 Codes
+         * - Domain Code,
+         * - Family Code, and
+         * - SubFamiliy Code
+         * by hyphens, resulting in “DomainCode”-“FamilyCode”-“SubFamilyCode”.
+         * @example PMNT-RCDT-ESCT
+         */
+        bankTransactionCode: string
+        /**
+         * @example 2021-08-17
+         */
+        bookingDate: string
+        creditorAccount: {
+          bban?: string
+          currency: string
+          iban: string
+        }
+        creditorAgent: 'RABONL2UXXX'
+        creditorId: 'NL98ZZZ09999999999'
+        creditorName: 'Creditor Name'
+        debtorAccount: {
+          bban?: string
+          currency: string
+          iban: string
+        }
+        debtorAgent: 'RABONL2UXXX'
+        debtorName: 'Debtor Name'
+        endToEndId: '90705030'
+        entryReference: '11900'
+        currencyExchange: [
+          {
+            sourceCurrency: 'EUR'
+            targetCurrency: 'EUR'
+            exchangeRate: '1'
+          },
+        ]
+        initiatingPartyName: 'TRX ST'
+        instructedAmount: {
+          amount: 5.12
+          sourceCurrency: 'EUR'
+        }
+        mandateId: 'EEDD-D121-01'
+        numberOfTransactions: 1000
+        paymentInformationIdentification: '123456'
+        purposeCode: 'EPAY'
+        raboBookingDateTime: '2021-08-17T14:21Z'
+        raboDetailedTransactionType: '633'
+        raboTransactionTypeName: 'st'
+        reasonCode: 'AG01'
+        remittanceInformationStructured: '23183510990000'
+        remittanceInformationUnstructured: 'Description ST 1'
+        transactionAmount: {
+          value: '6002.17'
+          currency: 'EUR'
+        }
+        ultimateCreditor: 'Ultimate Creditor'
+        ultimateDebtor: 'Ultimate Debtor'
+        valueDate: '2021-08-17'
+        unitCurrency: 'EUR'
+        balanceAfterBooking: {
+          balanceType: 'InterimBooked'
+          balanceAmount: {
+            value: '6002.17'
+            currency: 'EUR'
+          }
+        }
+      },
+    ]
+  }
+}
