@@ -1,5 +1,6 @@
+import assert from 'node:assert'
 import { createHash, createSign } from 'node:crypto'
-import { Client, request } from 'undici'
+import { Client, Dispatcher, request } from 'undici'
 import { v4 as uuidv4 } from 'uuid'
 import {
   GetAuthorizationCodeOptions,
@@ -15,11 +16,16 @@ class RaboPremium {
   private readonly AUTH_URL = 'https://oauth-sandbox.rabobank.nl/openapi/sandbox/oauth2-premium'
   private readonly client: Client
   private readonly cert: string
-  private readonly certSerialNumber: string
   private readonly key: string
+  /**
+   * @todo Remove and resolve from cert
+   */
+  private readonly certSerialNumber: string
 
   private readonly clientId: string
   private readonly clientSecret: string
+
+  private readonly defaultHeaders: Record<string, string> = {}
 
   /**
    * @param options
@@ -31,6 +37,13 @@ class RaboPremium {
     this.cert = cert
     this.key = key
     this.certSerialNumber = certSerialNumber
+
+    this.defaultHeaders['X-IBM-Client-Id'] = clientId
+    this.defaultHeaders['Accept'] = 'application/json'
+    this.defaultHeaders['Signature-Certificate'] = cert
+      .replace('-----BEGIN CERTIFICATE-----', '')
+      .replace('-----END CERTIFICATE-----', '')
+      .replace(/\n/g, '')
   }
 
   /**
@@ -98,31 +111,30 @@ class RaboPremium {
    * @see https://developer-sandbox.rabobank.nl/product/46913/api/46090#/ConsentDetailsServiceSandbox_1016/operation/%2Fv1%2Fconsents%2F{consentId}/get
    */
   public async getConsentDetails({ consentId }: GetConsentDetailsOptions): Promise<GetConsentDetailsResponse> {
-    const headers: Record<string, string> = {
-      'X-IBM-Client-Id': this.clientId,
-      'X-Request-ID': uuidv4(),
-      Accept: 'application/json',
-      Date: new Date().toUTCString(),
-      Digest: `sha-512=${createHash('sha512').update('').digest('base64')}`,
-      'Signature-Certificate': this.cert
-        .replace('-----BEGIN CERTIFICATE-----', '')
-        .replace('-----END CERTIFICATE-----', '')
-        .replace(/\n/g, ''),
-    }
-
-    headers.Signature = this.createSignature(headers)
-
-    const { body } = await this.client.request({
+    const { body } = await this.signedRequest({
       path: `/openapi/sandbox/oauth2-premium/v1/consents/${consentId}`,
       method: 'GET',
-      headers,
-      throwOnError: true,
     })
 
     return body.json()
   }
 
-  private createSignature(headers: Record<string, string> = {}): string {
+  private signedRequest: Dispatcher['request'] = (options) => {
+    options.headers ||= {}
+
+    assert(!Array.isArray(options.headers))
+
+    options.headers = Object.assign({}, this.defaultHeaders, options.headers)
+    options.headers['X-Request-ID'] = uuidv4()
+    options.headers['Date'] = new Date().toUTCString()
+    options.headers['Digest'] = `sha-512=${createHash('sha512').update('').digest('base64')}`
+    options.headers.Signature = this.createSignature(options.headers)
+    options.throwOnError = true
+
+    return this.client.request(options)
+  }
+
+  private createSignature(headers: Record<string, string | string[] | undefined> = {}): string {
     return Object.entries({
       keyId: this.certSerialNumber,
       algorithm: 'rsa-sha512',
