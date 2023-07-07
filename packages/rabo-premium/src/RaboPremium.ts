@@ -3,6 +3,8 @@ import { createHash, createSign } from 'node:crypto'
 import { Client, Dispatcher, request } from 'undici'
 import { v4 as uuidv4 } from 'uuid'
 import {
+  GetAccountDetailsOptions,
+  GetAccountDetailsResponse,
   GetAccountListOptions,
   GetAccountListResponse,
   GetAuthorizationCodeOptions,
@@ -129,6 +131,24 @@ class RaboPremium {
   public async getAccountList({ accessToken }: GetAccountListOptions): Promise<GetAccountListResponse> {
     const { body } = await this.signedRequest({
       path: '/openapi/sandbox/payments/insight/accounts',
+      headers: { Authorization: `Bearer ${accessToken}` },
+      method: 'GET',
+    })
+
+    return body.json()
+  }
+
+  /**
+   * Delivers information about specific payment account.
+   * @param options
+   * @see https://developer-sandbox.rabobank.nl/product/51891/api/48763#/BusinessAccountInsightAccounts_1124/operation/%2Faccounts%2F{account-id}/get
+   */
+  public async getAccountDetails({
+    accessToken,
+    accountId,
+  }: GetAccountDetailsOptions): Promise<GetAccountDetailsResponse> {
+    const { body } = await this.signedRequest({
+      path: `/openapi/sandbox/payments/insight/accounts/${accountId}`,
       headers: { Authorization: `Bearer ${accessToken}` },
       method: 'GET',
     })
