@@ -9,7 +9,7 @@
 - [ ] Add `sandbox` option to SDK's contructors
 - [ ] Add `logger`
 - [ ] Implement [this](https://github.com/nodejs/undici/blob/main/docs/best-practices/writing-tests.md)  for testing
-- [ ] Docs
-  - [ ] ABN Amro
-  - [ ] Triodos
+- [ ] Refactor Triodos to use unidici/Client
+- [ ] Write JSDoc to Triodos methods
+- [ ] Write JSDoc to ABNAmro methods
 - [ ] Add examples for each SDK
