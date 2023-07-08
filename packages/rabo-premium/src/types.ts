@@ -280,7 +280,7 @@ export type GetBalanceResponse = {
 }
 
 export type GetAccountTransactionsOptions = {
-  acessToken: string
+  accessToken: string
   accountId: string
 
   /** The status of the booking in the bank backend, only "booked" is supported. */
@@ -306,13 +306,44 @@ export type GetAccountTransactionsOptions = {
    * When not provided, the values are present in the response.
    * @todo Implement fancy key autocompletion and remove keys from response
    */
-  dropFields: string[] | string
+  dropFields?: (
+    | 'creditorAgent'
+    | 'creditorId'
+    | 'creditorName'
+    | 'debtorAgent'
+    | 'debtorName'
+    | 'endToEndId'
+    | 'currencyExchange'
+    | 'initiatingPartyName'
+    | 'mandateId'
+    | 'numberOfTransactions'
+    | 'paymentInformationIdentification'
+    | 'purposeCode'
+    | 'raboBookingDateTime'
+    | 'raboDetailedTransactionType'
+    | 'raboTransactionTypeName'
+    | 'reasonCode'
+    | 'remittanceInformationStructured'
+    | 'remittanceInformationUnstructured'
+    | 'ultimateCreditor'
+    | 'ultimateDebtor'
+    | 'valueDate'
+  )[]
+}
+
+export type AccountReportAccountReference = {
+  /** Basic Bank Account Number (BBAN) Identifier. */
+  bban?: string
+  /** ISO 4217 Alpha 3 currency code. */
+  currency: string
+  /** IBAN of an account. */
+  iban: string
 }
 
 export type GetAccountTransactionsResponse = {
   account: {
     bban?: string
-    currency: string
+    currency?: string
     iban: string
   }
   transactions: {
@@ -335,63 +366,93 @@ export type GetAccountTransactionsResponse = {
          * by hyphens, resulting in “DomainCode”-“FamilyCode”-“SubFamilyCode”.
          * @example PMNT-RCDT-ESCT
          */
-        bankTransactionCode: string
+        bankTransactionCode?: string
         /**
          * @example 2021-08-17
          */
         bookingDate: string
-        creditorAccount: {
-          bban?: string
-          currency: string
-          iban: string
+        creditorAccount: AccountReportAccountReference
+        /** Creditor Agent BIC. */
+        creditorAgent?: string
+        /** Identification of Creditors, e.g. a SEPA Creditor ID. */
+        creditorId?: string
+        /** Creditor Name */
+        creditorName?: string
+        debtorAccount: AccountReportAccountReference
+        /** Debtor Agent BIC. */
+        debtorAgent?: string
+        /** Debtor name */
+        debtorName: string
+        /** Unique end to end identity. */
+        endToEndId?: string
+        /** Sequence number of the booking on a Rabobank account. */
+        entryReference?: string
+        currencyExchange?: {
+          sourceCurrency: string
+          targetCurrency: string
+          exchangeRate: string
+        }[]
+        /** Name of initiating party. */
+        initiatingPartyName?: string
+        /** Original amount (f.e. USD amount paid towards the EUR DbtrAcct). */
+        instructedAmount?: {
+          amount: number
+          sourceCurrency: string
         }
-        creditorAgent: 'RABONL2UXXX'
-        creditorId: 'NL98ZZZ09999999999'
-        creditorName: 'Creditor Name'
-        debtorAccount: {
-          bban?: string
-          currency: string
-          iban: string
-        }
-        debtorAgent: 'RABONL2UXXX'
-        debtorName: 'Debtor Name'
-        endToEndId: '90705030'
-        entryReference: '11900'
-        currencyExchange: [
-          {
-            sourceCurrency: 'EUR'
-            targetCurrency: 'EUR'
-            exchangeRate: '1'
-          },
-        ]
-        initiatingPartyName: 'TRX ST'
-        instructedAmount: {
-          amount: 5.12
-          sourceCurrency: 'EUR'
-        }
-        mandateId: 'EEDD-D121-01'
-        numberOfTransactions: 1000
-        paymentInformationIdentification: '123456'
-        purposeCode: 'EPAY'
-        raboBookingDateTime: '2021-08-17T14:21Z'
-        raboDetailedTransactionType: '633'
-        raboTransactionTypeName: 'st'
-        reasonCode: 'AG01'
-        remittanceInformationStructured: '23183510990000'
-        remittanceInformationUnstructured: 'Description ST 1'
+        /**
+         * Identification of Mandates, e.g. a SEPA Mandate ID.
+         */
+        mandateId?: string
+        /** Number Of Transactions in batch */
+        numberOfTransactions?: number
+        /** Payment Information Identification */
+        paymentInformationIdentification?: string
+        /** ExternalPurposeCode from ISO 20022.
+         * Contains the category purpose code, which is the reason for payment transactions.
+         * List available on http://www.iso20022.org/external_code_list.page
+         */
+        purposeCode?: string
+        /**
+         * Date on which the transaction is booked at the Rabobank using the Zulu
+         * time standard which is in GMT/UTC timezone.
+         * @example 2021-08-17T14:21Z
+         */
+        raboBookingDateTime: string
+        /** Rabo Detailed Transaction Type */
+        raboDetailedTransactionType: string
+        /**
+         * Name of Transaction Type
+         * @example st
+         */
+        raboTransactionTypeName?: string
+        /** Reason Code */
+        reasonCode?: string
+        /** Reference as contained in the structured remittance reference
+         * structure (without the surrounding XML structure).
+         * Different from other places the content is containt in plain
+         * form not in form of a structered field.
+         */
+        remittanceInformationStructured?: string
+        remittanceInformationUnstructured: string
         transactionAmount: {
-          value: '6002.17'
-          currency: 'EUR'
+          value: string
+          currency: string
         }
-        ultimateCreditor: 'Ultimate Creditor'
-        ultimateDebtor: 'Ultimate Debtor'
-        valueDate: '2021-08-17'
-        unitCurrency: 'EUR'
+        ultimateCreditor?: string
+        ultimateDebtor?: string
+        /**
+         * Value date / interest date in format CCYY-MM-DD. C = Century, Y = Year, M = Month, D = Day
+         * @example 2021-08-17
+         */
+        valueDate: string
+        /** Same as Source Currency */
+        unitCurrency?: string
+        /** This is the balance of the account after the booked transaction */
         balanceAfterBooking: {
-          balanceType: 'InterimBooked'
+          balanceType: string
           balanceAmount: {
-            value: '6002.17'
-            currency: 'EUR'
+            value: string
+            currency: string
           }
         }
       },

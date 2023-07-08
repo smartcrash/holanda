@@ -179,8 +179,31 @@ class RaboPremium {
    * @param options
    * @see https://developer-sandbox.rabobank.nl/product/51891/api/51888#/BusinessAccountInsightTransactions_122/operation/%2Faccounts%2F{account-id}%2Ftransactions/get
    */
-  public async getAccountTransactions({}: GetAccountTransactionsOptions): Promise<GetAccountTransactionsResponse> {
-    return
+  public async getAccountTransactions({
+    accountId,
+    accessToken,
+    bookingStatus,
+    dateFrom,
+    dateTo,
+    dropFields,
+    nextPageToken,
+    size,
+  }: GetAccountTransactionsOptions): Promise<GetAccountTransactionsResponse> {
+    const queryParams = new URLSearchParams()
+    queryParams.set('bookingStatus', bookingStatus)
+    queryParams.set('dateFrom', new Date(dateFrom).toISOString())
+    queryParams.set('dateTo', new Date(dateTo).toISOString())
+    if (nextPageToken) queryParams.set('nextPageToken', nextPageToken)
+    if (size) queryParams.set('size', size.toString())
+    if (dropFields) queryParams.set('dropFields', dropFields.join(','))
+
+    const { body } = await this.signedRequest({
+      path: `/openapi/sandbox/payments/insight/accounts/${accountId}/transactions?${queryParams}`,
+      headers: { Authorization: `Bearer ${accessToken}` },
+      method: 'GET',
+    })
+
+    return body.json()
   }
 
   private signedRequest: Dispatcher['request'] = (options) => {
