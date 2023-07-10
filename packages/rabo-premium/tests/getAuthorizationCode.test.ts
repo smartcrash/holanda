@@ -1,9 +1,20 @@
 import test from 'ava'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { RaboPremium } from '../src/RaboPremium'
 
 let client: RaboPremium
 
-test.beforeEach(() => (client = new RaboPremium({ clientId: '4225fcd061965924da6e3fe519cbe32a' })))
+test.beforeEach(
+  () =>
+    (client = new RaboPremium({
+      certSerialNumber: '1523433508',
+      cert: readFileSync(join(__dirname, './example-cert.pem'), 'utf-8'),
+      key: readFileSync(join(__dirname, './example-key.pem'), 'utf-8'),
+      clientId: '4225fcd061965924da6e3fe519cbe32a',
+      clientSecret: '40b2c72088130db465e94d23b96d1bc0',
+    })),
+)
 
 test.serial('should return correct URI', async (t) => {
   const response = client.getAuthorizationCode({
