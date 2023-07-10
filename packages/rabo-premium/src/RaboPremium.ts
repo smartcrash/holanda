@@ -1,8 +1,10 @@
-import assert from 'node:assert'
 import { pki } from 'node-forge'
-import { createHash, createSign } from 'node:crypto'
+import assert from 'node:assert'
 import { Client, Dispatcher, request } from 'undici'
 import { v4 as uuidv4 } from 'uuid'
+import rsaSha512 from './helpers/rsaSha512'
+import sha512 from './helpers/sha512'
+import toBase64 from './helpers/toBase64'
 import {
   GetAccountDetailsOptions,
   GetAccountDetailsResponse,
@@ -98,7 +100,7 @@ class RaboPremium {
     const { body } = await request(`${this.AUTH_URL}/token`, {
       method: 'POST',
       headers: {
-        Authorization: `Basic ${Buffer.from(`${this.clientId}:${this.clientSecret}`).toString('base64')}`,
+        Authorization: `Basic ${toBase64(`${this.clientId}:${this.clientSecret}`)}`,
         'Content-Type': 'application/x-www-form-urlencoded',
         Accept: 'application/json',
       },
@@ -211,7 +213,7 @@ class RaboPremium {
     options.headers = Object.assign({}, this.defaultHeaders, options.headers)
     options.headers['X-Request-ID'] = uuidv4()
     options.headers['Date'] = new Date().toUTCString()
-    options.headers['Digest'] = `sha-512=${createHash('sha512').update('').digest('base64')}`
+    options.headers['Digest'] = `sha-512=${sha512('', 'base64')}`
     options.headers.Signature = this.createSignature(options.headers)
     options.throwOnError = true
 
@@ -223,9 +225,11 @@ class RaboPremium {
       keyId: this.serialNumber,
       algorithm: 'rsa-sha512',
       headers: 'date digest x-request-id',
-      signature: createSign('RSA-SHA512')
-        .update(`date: ${headers.Date}\ndigest: ${headers.Digest}\nx-request-id: ${headers['X-Request-ID']}`)
-        .sign(this.key, 'base64'),
+      signature: rsaSha512(
+        `date: ${headers.Date}\ndigest: ${headers.Digest}\nx-request-id: ${headers['X-Request-ID']}`,
+        this.key,
+        'base64',
+      ),
     })
       .map(([key, value]) => `${key}="${value}"`)
       .join(',')
