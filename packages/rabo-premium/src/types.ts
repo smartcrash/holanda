@@ -18,7 +18,6 @@ export type RaboPremiumOptions = {
    * Signing certificate
    */
   cert: string
-  certSerialNumber: string
 }
 
 export type GetAuthorizationCodeOptions = {

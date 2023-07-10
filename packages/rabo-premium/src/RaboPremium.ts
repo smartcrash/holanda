@@ -1,4 +1,5 @@
 import assert from 'node:assert'
+import { pki } from 'node-forge'
 import { createHash, createSign } from 'node:crypto'
 import { Client, Dispatcher, request } from 'undici'
 import { v4 as uuidv4 } from 'uuid'
@@ -24,12 +25,7 @@ class RaboPremium {
   private readonly AUTH_URL = 'https://oauth-sandbox.rabobank.nl/openapi/sandbox/oauth2-premium'
   private readonly client: Client
   private readonly key: string
-  /**
-   * @todo Remove and resolve from cert
-   * @see https://www.geeksforgeeks.org/node-js-x509-serialnumber-property/
-   */
-  private readonly certSerialNumber: string
-
+  private readonly serialNumber: string
   private readonly clientId: string
   private readonly clientSecret: string
 
@@ -38,12 +34,13 @@ class RaboPremium {
   /**
    * @param options
    */
-  constructor({ clientId, clientSecret, key, cert, certSerialNumber }: RaboPremiumOptions) {
+  constructor({ clientId, clientSecret, key, cert }: RaboPremiumOptions) {
     this.clientId = clientId
     this.clientSecret = clientSecret
     this.client = new Client('https://api-sandbox.rabobank.nl', { connect: { key, cert } })
     this.key = key
-    this.certSerialNumber = certSerialNumber
+
+    this.serialNumber = BigInt(`0x${pki.certificateFromPem(cert).serialNumber}`).toString(10)
 
     this.defaultHeaders['X-IBM-Client-Id'] = clientId
     this.defaultHeaders['Accept'] = 'application/json'
@@ -223,7 +220,7 @@ class RaboPremium {
 
   private createSignature(headers: Record<string, string | string[] | undefined> = {}): string {
     return Object.entries({
-      keyId: this.certSerialNumber,
+      keyId: this.serialNumber,
       algorithm: 'rsa-sha512',
       headers: 'date digest x-request-id',
       signature: createSign('RSA-SHA512')

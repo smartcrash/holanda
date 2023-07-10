@@ -8,7 +8,6 @@ let client: RaboPremium
 test.beforeEach(
   () =>
     (client = new RaboPremium({
-      certSerialNumber: '1523433508',
       cert: readFileSync(join(__dirname, './example-cert.pem'), 'utf-8'),
       key: readFileSync(join(__dirname, './example-key.pem'), 'utf-8'),
       clientId: '4225fcd061965924da6e3fe519cbe32a',
