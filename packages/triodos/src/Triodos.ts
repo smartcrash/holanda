@@ -2,6 +2,9 @@ import assert from 'node:assert'
 import querystring from 'node:querystring'
 import { errors as Errors, request } from 'undici'
 import { v4 as uuidv4 } from 'uuid'
+import rsaSha256 from './helpers/rsaSha256'
+import sha256 from './helpers/sha256'
+import toBase64 from './helpers/toBase64'
 import {
   DeleteAccountInformationServiceConsentOptions,
   DeleteAccountInformationServiceConsentResponse,
@@ -39,9 +42,6 @@ import {
   UpdateConsentAuthorisationWithAccessTokenOptions,
   UpdateConsentAuthorisationWithAccessTokenResponse,
 } from './types'
-import toBase64 from './helpers/toBase64'
-import rsaSha256 from './helpers/rsaSha256'
-import sha256 from './helpers/sha256'
 
 class Triodos {
   private readonly baseUrl = 'https://xs2a-sandbox.triodos.com/'
