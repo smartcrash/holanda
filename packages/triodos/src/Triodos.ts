@@ -1,5 +1,4 @@
 import assert from 'node:assert'
-import { BinaryLike, createHash, createSign } from 'node:crypto'
 import querystring from 'node:querystring'
 import { errors as Errors, request } from 'undici'
 import { v4 as uuidv4 } from 'uuid'
@@ -40,6 +39,9 @@ import {
   UpdateConsentAuthorisationWithAccessTokenOptions,
   UpdateConsentAuthorisationWithAccessTokenResponse,
 } from './types'
+import toBase64 from './helpers/toBase64'
+import rsaSha256 from './helpers/rsaSha256'
+import sha256 from './helpers/sha256'
 
 class Triodos {
   private readonly baseUrl = 'https://xs2a-sandbox.triodos.com/'
@@ -162,7 +164,7 @@ class Triodos {
     } else {
       assert(typeof clientId === 'string')
       assert(typeof clientSecret === 'string')
-      options.headers.Authorization = `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}`
+      options.headers.Authorization = `Basic ${toBase64(`${clientId}:${clientSecret}`)}`
     }
 
     const endpoint = `${this.baseUrl}auth/${this.tenant}/v1/token`
@@ -506,15 +508,13 @@ class Triodos {
 
     options.headers = Object.assign({}, this.defaultHeaders, options.headers)
     options.headers['X-Request-ID'] = uuidv4()
-    options.headers['Digest'] = this.calculateMessageDigest(String(options?.body))
+    options.headers['Digest'] = 'SHA-256=' + sha256(String(options.body || ''), 'base64')
     options.headers['Signature'] = this.calculateSignature(options.headers, this.keyId, this.signingKey)
 
     options.throwOnError = true
 
     return request(url, options)
   }
-
-  private calculateMessageDigest = (data: BinaryLike) => 'SHA-256=' + createHash('sha256').update(data).digest('base64')
 
   private getSigningString(headers: Record<string, unknown>) {
     assert(typeof headers['Digest'] === 'string')
@@ -528,7 +528,7 @@ class Triodos {
       `keyId="${keyId}",` +
       'algorithm="rsa-sha256",' +
       'headers="digest x-request-id",' +
-      `signature="${createSign('RSA-SHA256').update(this.getSigningString(headers)).sign(privateKey, 'base64')}"`
+      `signature="${rsaSha256(this.getSigningString(headers), privateKey, 'base64')}"`
     )
   }
 }
